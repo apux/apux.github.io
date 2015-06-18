@@ -1,0 +1,88 @@
+---
+title: Merge
+date: 2013-09-23
+tags: [Ruby, Rails, ActiveRecord]
+---
+
+Rails has a functionality that I use a lot but I think it is not as widespread
+as it should.  I'm talking about the `ActiveRecord`'s `merge` method.  Probably,
+the reason why this method is not widely used is because there is a method with
+the same name in the `Hash` class and that causes some confusion.
+
+## `Hash`'s `merge`
+
+The `Hash`'s `merge` method merges two hashes and returns a third hash. Example:
+
+```ruby
+h1 = {a: 'cat', b: 'dog'}
+h2 = {c: 'bird'}
+h3 = h1.merge(h2)
+# => {:a=>"cat", :b=>"dog", :c=>"bird"}
+```
+
+This is a method available on the
+[Ruby Core](http://www.ruby-doc.org/core-2.0.0/Hash.html#method-i-merge).
+
+## `ActiveRecord`'s `merge`
+
+The `ActiveRecord`'s `merge`, instead, helps to build queries that involve two
+or more models that need to work with defined scopes. What it does is merging
+scopes prior to perform the query.
+
+Example:
+
+Let's build two models, `Client` wihch has many `Product`s, each one with some
+scopes.
+
+```ruby
+# app/models/client.rb
+class Client < ActiveRecord::Base
+  has_many :products
+
+  scope :recently_activated, -> { where 'activated_at > ?', 1.month.ago }
+end
+
+# app/models/product.rb
+class Product < ActiveRecord::Base
+  belongs_to :client
+
+  scope :expensive,  -> { where 'products.price > 1000' }
+  scope :small,      -> { where 'products.size <= 99' }
+  scope :medium,     -> { where 'products.size > 99 AND products.size < 999' }
+  scope :big,        -> { where 'products.size >= 999' }
+  scope :available,  -> { where available: true }
+end
+```
+
+Now, if you want to know all the recently activated clients who bought
+expensive medium available products, you have to build your query this way:
+
+```ruby
+Client.recently_activated.joins(:products).
+  where('products.price > 1000 AND products.size > 99 AND products.size < 999 AND products.available = ?', true)
+```
+
+Or, using the `merge` method.
+
+```ruby
+Client.recently_activated.joins(:products).merge(Product.expensive.medium.available)
+```
+
+The last code is not only easier to build and easier to read, it also follows
+better a DRY concept. If, for any reason, the definition of 'medium' changes,
+you only have to change it in one place, all your queries remain intact.
+
+It is also possible to use `merge` inside a scope. Example:
+
+
+```ruby
+# app/models/client.rb
+class Client < ActiveRecord::Base
+  has_many :products
+
+  scope :recently_activated, -> { where 'activated_at > ?', 1.month.ago }
+  scope :with_expensive_products, -> { joins(:products).merge(Product.expensive) }
+end
+```
+
+Quite useful, right?
