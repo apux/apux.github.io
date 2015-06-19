@@ -27,3 +27,13 @@ ol {
 .small-column {
   @include span-columns(4 of 12);
 }
+
+article {
+  .heading {
+    time {
+      display: block;
+      color: gray;
+      font-size: 1rem;
+    }
+  }
+}

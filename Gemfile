@@ -8,6 +8,7 @@ gem "middleman-deploy", "~> 1.0"
 gem "bitters"
 gem "bourbon"
 gem "neat"
+gem "nokogiri"
 
 # For feed.xml.builder
 gem "builder", "~> 3.0"
