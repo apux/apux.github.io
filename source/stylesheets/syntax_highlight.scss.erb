@@ -1,0 +1,21 @@
+<%= Rouge::Themes::Github.render(:scope => '.highlight') %>
+
+.highlight {
+  background: $secondary-background-color;
+  border: $secondary-border;
+  padding: 1em;
+  border-radius: $base-border-radius * 1.5;
+  font-family: monaco;
+  font-size: 0.9em;
+}
+
+p code, h1 code, h2 code, h3 code, h4 code {
+  background: #F7F7F7;
+  border-radius: $base-border-radius * 1.5;
+  border: 1px solid $light-gray;
+  font-family: monaco;
+  font-size: 0.8em;
+  font-style: normal;
+  padding: 0.1em 0.4em;
+  white-space: nowrap;
+}

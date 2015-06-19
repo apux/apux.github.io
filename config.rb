@@ -107,3 +107,7 @@ activate :deploy do |deploy|
   deploy.branch = 'master'
   deploy.build_before = true
 end
+
+activate :syntax
+set :markdown_engine, :redcarpet
+set :markdown, fenced_code_blocks: true, smartypants: true

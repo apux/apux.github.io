@@ -9,6 +9,8 @@ gem "bitters"
 gem "bourbon"
 gem "neat"
 gem "nokogiri"
+gem "middleman-syntax"
+gem "redcarpet"
 
 # For feed.xml.builder
 gem "builder", "~> 3.0"
