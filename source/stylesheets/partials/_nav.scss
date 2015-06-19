@@ -1,0 +1,22 @@
+nav {
+  border-bottom: 1px solid $base-border-color;
+  margin: em(50) 0;
+  text-align: center;
+
+  ul {
+    display: inline-block;
+    margin-bottom: em(30);
+  }
+
+  .blog-title {
+    font-size: 4em;
+    font-weight: bold;
+  }
+
+  .caption {
+    display: block;
+    color: $medium-gray;
+    font-family: $heading-font-family;
+    font-size: 1.2em;
+  }
+}
