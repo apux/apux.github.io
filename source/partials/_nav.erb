@@ -1,7 +1,9 @@
 <nav>
   <ul>
     <li>
-      <%= link_to "El Blog de ApuX", "index.html", :class => 'blog-title' %>
+      <% link_to("/index.html", class: 'blog-title') do %>
+        El Blog de Ap<span>uX</span>
+      <% end %>
       <span class="caption">My Learning about Software Development</span>
     </li>
   </ul>

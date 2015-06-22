@@ -1,5 +1,13 @@
 #main {
-  @include outer-container;
+  section#content, footer .container {
+    @include outer-container;
+  }
+}
+
+#content {
+  hr:last-child {
+    visibility: hidden;
+  }
 }
 
 ol {
@@ -36,6 +44,29 @@ article {
       font-size: 1rem;
     }
   }
+
+  .read-more {
+    text-align: right;
+
+    a {
+      display: block-inline;
+      font-family: $heading-font-family;
+      font-size: 0.8em;
+      font-weight: 700;
+      margin-right: 1em;
+      position: relative;
+      text-transform: uppercase;
+
+      span {
+        font-family: $base-font-family;
+        font-size: 1.5em;
+        font-style: normal;
+        position: absolute;
+        right: -9px;
+        top: -7px;
+      }
+    }
+  }
 }
 
 p
@@ -45,4 +76,29 @@ p
 
 p, li {
   font-weight: 300;
+}
+
+hr {
+  position: relative;
+  height: 1px;
+  border: none;
+  margin: 3em 0;
+}
+
+hr:before,
+hr:after {
+  position: absolute;
+  margin-top: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  content: "";
+}
+
+hr:before { left: 0; }
+hr:after  { right: 0; }
+
+/* default color */
+hr, hr:before, hr:after {
+  background-color: $secondary-color;
 }

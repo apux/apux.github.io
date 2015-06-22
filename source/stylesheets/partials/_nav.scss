@@ -1,6 +1,8 @@
 nav {
-  border-bottom: 1px solid $base-border-color;
-  margin: em(50) 0;
+  background-color: tint($light-gray, 75%);
+  border-bottom: 3px solid $secondary-border-color;
+  margin-bottom: em(50);
+  padding-top: em(50);
   text-align: center;
 
   ul {
@@ -12,6 +14,10 @@ nav {
     font-family: 'Dancing Script', cursive;
     font-size: 4em;
     font-weight: bold;
+
+    span {
+      letter-spacing: -0.11em;
+    }
   }
 
   .caption {
