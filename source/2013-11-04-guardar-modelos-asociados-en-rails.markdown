@@ -229,7 +229,7 @@ Empleado.find(1).puesto
 
 De nuevo, se mantiene el comportamiento visto en la relación uno a muchos, es decir, el nuevo modelo se guarda automáticamente al asignarse a un modelo existente.
 
-## `build_`association y `create_`association
+## `build_`{association} y `create_`{association}
 
 Si queremos asociar un nuevo modelo `Puesto` al modelo de `Empleado`, pero sin salvarlo, buscaríamos hacer algo como esto: `empleado.puesto.build(nombre: 'jefe')`, desafortunadamente eso no funciona, nos arroja un error que dice `NoMethodError: undefined method 'build' for nil:NilClass`. Esto es porque la asociación `puesto` no corresponde a una clase _proxy_ como en la relación uno a muchos, sino que es ya propiamente el modelo `puesto` que en este caso es `nil` (o puede ser un objeto `Puesto` en caso de que ya tenga un puesto asociado).
 
