@@ -4,10 +4,10 @@
 @import "bourbon";
 @import "base/base";   /* Bitters needs to be imported before Neat */
 @import "neat";
-@import "headings";
+
+@import "custom/headings";
+@import "custom/syntax_highlight";
 
 @import "partials/layout";
 @import "partials/nav";
 @import "partials/footer";
-
-@import "syntax_highlight";
