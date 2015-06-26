@@ -1,0 +1,450 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>El Blog de ApuX - Directory structure conventions in RSpec and Minitest</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Nunito:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Dancing Script:400,700" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="main" role="main">
+      <nav>
+  <ul>
+    <li>
+<a class="blog-title" href="/">        El Blog de Ap<span>uX</span>
+</a>      <span class="caption">My Learning about Software Development</span>
+    </li>
+  </ul>
+</nav>
+
+      <section id="content">
+          <article>
+    <h1 class="heading">
+      Directory structure conventions in RSpec and Minitest
+      <time>Apr 13 2015</time>
+    </h1>
+    <p>When we create a new project in Ruby, the basic structure is putting the code in a directory named <code>lib</code>. We can also add a directory named <code>test</code> or <code>spec</code> for our testing files. It is not mandatory, but it is a convention that we should follow, not only because our directory structure will be more intuitive, but also because the testing frameworks sometimes assume it.
+If we want to use RSpec, the directory name should be <code>spec</code>. If we want to use Minitest, we are allowed to name it the way we want, but it is common to named it <code>test</code> or <code>spec</code> as well.</p>
+
+<h2>RSpec</h2>
+
+<p>Let&rsquo;s try a basic example with RSpec:</p>
+
+<p>Directory structure:</p>
+<pre class="highlight plaintext"><code>fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── spec
+    └── fizz_buzz_spec.rb
+</code></pre>
+
+<p><code>#spec/fizz_buzz_spec.rb</code></p>
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'fizz_buzz'</span>
+
+<span class="n">describe</span> <span class="no">FizzBuzz</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'returns "1" when receives 1'</span> <span class="k">do</span>
+    <span class="n">expect</span><span class="p">(</span><span class="no">FizzBuzz</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">convert</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="s1">'1'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p><code>#lib/fizz_buzz.rb</code></p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">FizzBuzz</span>
+  <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="s1">'1'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>It is just the first test for a fizz buzz project.</p>
+
+<p>Now, we can just run <code>rspec</code>:</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_rspec]$ rspec
+.
+
+Finished in 0.00151 seconds (files took 0.1615 seconds to load)
+1 example, 0 failures
+</code></pre>
+
+<p>I&rsquo;m starting with a passing test because the result is less verbose, but we know that we should start with a failing test, right?, right? :)</p>
+
+<p>As we can see, we didn&rsquo;t need any extra configuration. In our <code>fizz_buzz_spec</code> file, we required the <code>fizz_buzz</code> file and nothing more. Actually, we didn&rsquo;t need to require the <code>rspec</code> library and we didn&rsquo;t specify where our test files were. We just run the <code>rspec</code> command from the command line in our project directory and RSpec did the rest.</p>
+
+<p>What would have happened if our spec directory was named differently? Let&rsquo;s say</p>
+<pre class="highlight plaintext"><code>fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── my_testing_directory
+    └── fizz_buzz_spec.rb
+</code></pre>
+
+<p>Well, in that case, if we run the <code>rspec</code> command it won&rsquo;t find any test file to execute.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_rspec]$ rspec
+No examples found.
+
+
+Finished in 0.00031 seconds (files took 0.07711 seconds to load)
+0 examples, 0 failures
+</code></pre>
+
+<p>We must run the command indicating the directory.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_rspec]$ rspec my_testing_directory
+.
+
+Finished in 0.00151 seconds (files took 0.1615 seconds to load)
+1 example, 0 failures
+</code></pre>
+
+<p>Also, it is important to follow the spec file name convention. RSpec expects all the spec file names to end with <code>_spec</code>. In our case, <code>fizz_buzz_spec.rb</code>. If we rename it, RSpec won&rsquo;t execute it. Let&rsquo;s see.</p>
+<pre class="highlight plaintext"><code>fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── spec
+    └── fizz_buzz_testing_file.rb
+</code></pre>
+
+<p>Let&rsquo;s try to execute:</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_rspec]$ rspec
+No examples found.
+
+
+Finished in 0.00031 seconds (files took 0.07711 seconds to load)
+0 examples, 0 failures
+</code></pre>
+
+<p>Again, RSpec didn&rsquo;t load our file because it does not follow the name convention. If we name it back to <code>fizz_buzz_spec.rb</code>, it will work.</p>
+
+<p>If we see the testing file, we can see we didn&rsquo;t need any special configuration to load the <code>fizz_buzz.rb</code> besides requiring it. RSpec assumes that our code is in a <code>lib</code> directory and that is why it can load our file correctly. Let&rsquo;s try to rename the <code>lib</code> directory and see what happen.</p>
+<pre class="highlight plaintext"><code>fizz_buzz_rspec
+├── main
+│   └── fizz_buzz.rb
+└── spec
+    └── fizz_buzz_spec.rb
+</code></pre>
+
+<p>If we try to run rspec.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_rspec]$ rspec
+[...]core_ext/kernel_require.rb:54:in `require': cannot load such file -- fizz_buzz (LoadError)
+...
+[...]spec/fizz_buzz_spec.rb:1:in `&lt;top (required)&gt;'
+...
+</code></pre>
+
+<p>It is failing because of the <code>require</code> (the first line of the spec file). It doesn&rsquo;t find a <code>fizz_buzz.rb</code> file, which is assumed to be in the <code>lib</code> directory that we just renamed. So, we rename it back to <code>lib</code> and everything works again.</p>
+
+<p>So, as we can see, it is better to stick to the conventions when we use RSpec.</p>
+
+<h3><code>spec_helper</code></h3>
+
+<p>It is common to use a <code>spec_helper</code> file. When our project grows, we need to include more testing libraries, or add more tasks to do before or after testing. For example, we would like to include <code>shoulda</code>, or to clean the database. This tasks affects many testing files, so, it is better to have it in its own file and include it in the other files. Our example does not need anything else, but I just want to show how it would be if it needed it.</p>
+
+<p>First, we need to create a <code>spec_helper.rb</code> file in our <code>spec</code> directory.</p>
+<pre class="highlight plaintext"><code>fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── spec
+    ├── fizz_buzz_spec.rb
+    └── spec_helper.rb
+</code></pre>
+
+<p>Now, we need to change the spec file:</p>
+
+<p><code>#spec/fizz_buzz_spec.rb</code></p>
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'spec_helper'</span>
+<span class="nb">require</span> <span class="s1">'fizz_buzz'</span>
+
+<span class="n">describe</span> <span class="no">FizzBuzz</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'returns "1" when receives 1'</span> <span class="k">do</span>
+    <span class="n">expect</span><span class="p">(</span><span class="no">FizzBuzz</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">convert</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span> <span class="s1">'1'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>If we run it now, it executes correctly. It doesn&rsquo;t matter where our test file is (for example, it could be under <code>spec/models/inbox/fizz_buzz_spec.rb</code>) it will be able to require the <code>spec_helper</code> with <code>require &#39;spec_helper&#39;</code>.</p>
+
+<p>As I said before, we don&rsquo;t need to add anything to our <code>spec_helper</code> file, but I&rsquo;ll show how a <code>spec_helper</code> file in Rails looks, just as an example:</p>
+
+<p><code>spec/spec_helper.rb</code></p>
+<pre class="highlight ruby"><code><span class="no">ENV</span><span class="p">[</span><span class="s2">"RAILS_ENV"</span><span class="p">]</span> <span class="o">||=</span> <span class="s1">'test'</span>
+<span class="nb">require</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s2">"../../config/environment"</span><span class="p">,</span> <span class="kp">__FILE__</span><span class="p">)</span>
+<span class="nb">require</span> <span class="s1">'rspec/rails'</span>
+<span class="nb">require</span> <span class="s1">'shoulda-matchers'</span>
+<span class="nb">require</span> <span class="s1">'rspec/autorun'</span>
+
+<span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">use_transactional_fixtures</span> <span class="o">=</span> <span class="kp">true</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">order</span> <span class="o">=</span> <span class="s2">"random"</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>It loads all the libraries it needs to work with, and configure RSpec to use transactional fixtures and execute the tests in random order.</p>
+
+<p>Note that this time, <code>spec_helper</code> is just another file, it can be named differently and it will still work as longs as it is required with the correct name.</p>
+
+<h2>Minitest</h2>
+
+<p>Minitest allows us to name our directories the way we want, but we need to have it in mind because it is important when running our tests.</p>
+
+<p>Because I like to follow the conventions, I created the project with a structure very similar to the RSpec&rsquo;s one.</p>
+<pre class="highlight plaintext"><code>fizz_buzz_minitest
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+</code></pre>
+
+<p><code>#test/fizz_buzz_test.rb</code></p>
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'minitest/autorun'</span>
+<span class="nb">require</span> <span class="s1">'fizz_buzz'</span>
+
+<span class="n">describe</span> <span class="no">FizzBuzz</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'returns "1" when receives 1'</span> <span class="k">do</span>
+    <span class="n">assert</span> <span class="s1">'1'</span><span class="p">,</span> <span class="no">FizzBuzz</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">convert</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p><code>#lib/fizz_buzz.rb</code></p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">FizzBuzz</span>
+  <span class="k">def</span> <span class="nf">convert</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="s1">'1'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>The first thing I&rsquo;d like to point out is that in Minitest it is mandatory to require the Minitest library, specifically, the <code>minitest/autorun</code>, which provides everything we need to execute the test (e.g. the assertions methods). Note that I&rsquo;m using the <em>spec</em> syntax here, but it is also possible to use the classic syntax for Minitest.</p>
+
+<p>Now, we don&rsquo;t have a <code>minitest</code> command to run, as we had with RSpec. Minitest is a very basic (but very powerful) testing framework. One of its strengths is that it is not a DSL (like RSpec), but simple Ruby. So, in order to execute our test, we need to run just ruby.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ ruby test/fizz_buzz_test.rb
+[...]core_ext/kernel_require.rb:54:in `require': cannot load such file -- fizz_buzz (LoadError)
+...
+        from test/fizz_buzz_test.rb:1:in `&lt;main&gt;'
+</code></pre>
+
+<p>Humm, it actually executed something, but it didn&rsquo;t go well. What happened here is that it was not possible to load the <code>fizz_buzz</code> file. Luckily, it is something easy to solve. Ruby includes a <code>require_relative</code> to require a file specifying a relative path. This path must be built based on the current file path. In our case, our test file is inside a <code>test</code> directory, so the path has to move backward one directory and then add the path to the required file.</p>
+
+<p>Our testing file now looks this way.</p>
+
+<p><code>#test/fizz_buzz_test.rb</code></p>
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'minitest/autorun'</span>
+<span class="nb">require_relative</span> <span class="s1">'../lib/fizz_buzz'</span>
+
+<span class="n">describe</span> <span class="no">FizzBuzz</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'returns "1" when receives 1'</span> <span class="k">do</span>
+    <span class="n">assert</span> <span class="s1">'1'</span><span class="p">,</span> <span class="no">FizzBuzz</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">convert</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>We can run our tests again.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ ruby test/fizz_buzz_test.rb
+Run options: --seed 21470
+
+# Running:
+
+.
+
+Finished in 0.000718s, 1393.3787 runs/s, 1393.3787 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<p>Now it works. Note that you must run the command from the project base directory, not from <code>lib</code> or <code>test</code>.</p>
+
+<p>However, there is a little problem with this approach. If we re-arrange the directory structure, either test or lib, we need to change the relative path. For example.</p>
+<pre class="highlight plaintext"><code>fizz_buzz_minitest
+├── lib
+│   └── models
+│       └── fizz_buzz.rb
+└── test
+    └── models
+        └── fizz_buzz_test.rb
+</code></pre>
+
+<p>Then we need to change the relative path to:</p>
+<pre class="highlight ruby"><code><span class="nb">require_relative</span> <span class="s1">'../../lib/models/fizz_buzz'</span>
+</code></pre>
+
+<p>In our example we have just one file, but in a real project it would be a big problem.</p>
+
+<p>Fortunately, we have an alternative. We can execute our test file specifying in the command line where ruby must look for the required files. With our initial structure, we can execute the test this way.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ ruby -I lib test/fizz_buzz_test.rb
+Run options: --seed 2633
+
+# Running:
+
+.
+
+Finished in 0.000820s, 1220.1178 runs/s, 1220.1178 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<p>We used the <code>-I</code> flag, indicating that ruby should load the directory <code>lib</code>.</p>
+
+<p>Note that with minitest, it doesn&rsquo;t matter how the files and directories are named, it will just work. Example:</p>
+<pre class="highlight plaintext"><code>fizz_buzz_minitest
+├── my_own_directory
+│   └── fizz_buzz.rb
+└── my_testing_directory
+    └── fizz_buzz_test.rb
+</code></pre>
+
+<p>Let&rsquo;s execute the test.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ ruby -I my_own_directory test/fizz_buzz_testing_file.rb
+Run options: --seed 31542
+
+# Running:
+
+.
+
+Finished in 0.000719s, 1389.9584 runs/s, 1389.9584 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<p>Everything is working. This is because we are not running the entire test suite, as we do with RSpec. In this case, we are only running one file and we specify what directory should be loaded.</p>
+
+<h3><code>test_helper</code></h3>
+
+<p>In the same way we use a <code>spec_helper</code> file in RSpec, we can use a <code>test_helper</code> in minitest. Note that the file name does not matter, but <code>test_helper</code> is a widely used name when working with Minitest.</p>
+
+<p>We can create a <code>test_helper.rb</code> file in our <code>test</code> directory.</p>
+<pre class="highlight plaintext"><code>fizz_buzz_minitest
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    ├── fizz_buzz_test.rb
+    └── test_helper.rb
+</code></pre>
+
+<p>The content for our <code>test_helper</code> file would be a little better than the <code>spec_helper</code>, because now we can add some code at least.</p>
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'minitest/autorun'</span>
+<span class="nb">require</span> <span class="s1">'minitest/pride'</span>
+</code></pre>
+
+<p>We extracted the require of Minitest&rsquo;s autorun to the <code>test_helper</code> file, and also required <code>pride</code>, a small library from Minitest that colorize the output.</p>
+
+<p>Now we need to change the require of our testing file.</p>
+
+<p><code>#spec/fizz_buzz_test.rb</code></p>
+<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'test_helper'</span>
+<span class="nb">require</span> <span class="s1">'fizz_buzz'</span>
+
+<span class="n">describe</span> <span class="no">FizzBuzz</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'returns "1" when receives 1'</span> <span class="k">do</span>
+    <span class="n">assert</span> <span class="s1">'1'</span><span class="p">,</span> <span class="no">FizzBuzz</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">convert</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>And try to run it.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ ruby -I lib test/fizz_buzz_test.rb
+
+[...]core_ext/kernel_require.rb:54:in `require': cannot load such file -- test_helper (LoadError)
+...
+        from spec/fizz_buzz_test.rb:1:in `&lt;main&gt;'
+</code></pre>
+
+<p>Ups, something failed.</p>
+
+<p>The reason is that the required file couldn&rsquo;t be loaded. We indicated ruby that it should load the <code>lib</code> directory, but the <code>test_helper</code> is not there. It is in the <code>test</code> directory. Well, for that case, we can use <code>require_relative</code>, but we could have the same potential problems: if we move the files into other directories, all the paths passed to <code>require_relative</code> should be updated as well.</p>
+
+<p>Again, the best option is to specify that another directory should be loaded by ruby when executing the test file. We can do that by adding the <code>test</code> directory to the list (separated by a colon <code>:</code>)</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ ruby -I lib:test test/fizz_buzz_test.rb
+Run options: --seed 64180
+
+# Running:
+
+.
+
+Fabulous run in 0.000797s, 1254.2865 runs/s, 1254.2865 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+</code></pre>
+
+<p>And&hellip; every thing is working again.</p>
+
+<p>As we can see, Minitest does not assume a specific directory structure, because we can specify its dependencies as command line options. However, I recommend to use the one we saw here because is a very widespread one. Any developer could figure out where to find which files, and it is easy to grow if we want to use rake (for example) to run our test in batches.</p>
+
+  </article>
+
+      </section>
+      <footer>
+  <div class="container">
+    <ul class="large-column">
+      <li><h5 class="heading">Recent Articles</h5></li>
+      <li>
+        <ol>
+            <li>
+              <a href="/2015/05/04/directory-tree.html">Directory tree</a>
+              <span>May  4</span>
+            </li>
+            <li>
+              <a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html">Directory structure conventions in RSpec and Minitest</a>
+              <span>Apr 13</span>
+            </li>
+            <li>
+              <a href="/2015/01/12/joins-vs-includes-espanol.html">Joins vs Includes (Español)</a>
+              <span>Jan 12</span>
+            </li>
+            <li>
+              <a href="/2014/12/08/joins-vs-includes.html">Joins vs Includes</a>
+              <span>Dec  8</span>
+            </li>
+            <li>
+              <a href="/2014/09/01/minitest-v4-y-v5.html">Minitest v4 y  v5</a>
+              <span>Sep  1</span>
+            </li>
+            <li>
+              <a href="/2014/07/14/minitest-v4-and-v5.html">Minitest v4 and v5</a>
+              <span>Jul 14</span>
+            </li>
+            <li>
+              <a href="/2014/03/11/formularios-anidados.html">Formularios anidados</a>
+              <span>Mar 11</span>
+            </li>
+            <li>
+              <a href="/2014/02/10/como-solucionar-las-consultas-n-1-en-rails.html">Cómo solucionar consultas N+1 en Rails</a>
+              <span>Feb 10</span>
+            </li>
+            <li>
+              <a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html">How to fix N+1 queries in Rails</a>
+              <span>Feb  3</span>
+            </li>
+            <li>
+              <a href="/2014/01/13/super-in-ruby.html">Super in Ruby</a>
+              <span>Jan 13</span>
+            </li>
+        </ol>
+      </li>
+    </ul>
+
+    <ul class="small-column">
+      <li><h5 class="heading">Tags</h5></li>
+      <li>
+        <ol>
+            <li><a href="/tags/rails.html">Rails (8)</a></li>
+            <li><a href="/tags/activerecord.html">ActiveRecord (7)</a></li>
+            <li><a href="/tags/nested_attributes.html">nested_attributes (1)</a></li>
+            <li><a href="/tags/formularios.html">formularios (1)</a></li>
+            <li><a href="/tags/ruby.html">Ruby (5)</a></li>
+            <li><a href="/tags/struct.html">Struct (1)</a></li>
+            <li><a href="/tags/openstruct.html">OpenStruct (1)</a></li>
+            <li><a href="/tags/asociaciones.html">Asociaciones (1)</a></li>
+            <li><a href="/tags/minitest.html">Minitest (3)</a></li>
+            <li><a href="/tags/rspec.html">RSpec (2)</a></li>
+            <li><a href="/tags/tree.html">tree (1)</a></li>
+        </ol>
+      </li>
+      <ul>
+  </div>
+</footer>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,407 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>El Blog de ApuX - Super in Ruby</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Nunito:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Dancing Script:400,700" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="main" role="main">
+      <nav>
+  <ul>
+    <li>
+<a class="blog-title" href="/">        El Blog de Ap<span>uX</span>
+</a>      <span class="caption">My Learning about Software Development</span>
+    </li>
+  </ul>
+</nav>
+
+      <section id="content">
+          <article>
+    <h1 class="heading">
+      Super in Ruby
+      <time>Jan 13 2014</time>
+    </h1>
+    <p>In object oriented programming languages, inheritance is a great concept to use. It is not just about code reuse, but about design. However, we can reuse code when using inheritance, but we need to know how it works within our language and how classes and methods interact in order to take benefit of it.</p>
+
+<h2>Methods in subclasses and superclasses</h2>
+
+<p>When executing an object&rsquo;s method in Ruby, the interpreter search for this method in the object&rsquo;s class definition, if it is found, then it is executed, otherwise it search in the object&rsquo;s class&rsquo;s superclass, and so on. Example:</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+  <span class="k">def</span> <span class="nf">sleep</span>
+    <span class="nb">puts</span> <span class="s2">"Sleeping..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">eat</span>
+    <span class="nb">puts</span> <span class="s2">"Eating..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">run</span>
+    <span class="nb">puts</span> <span class="s2">"Running..."</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+  <span class="k">def</span> <span class="nf">work</span>
+    <span class="nb">puts</span> <span class="s2">"Working..."</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Executing:</p>
+<pre class="highlight ruby"><code><span class="n">eployee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">work</span>
+<span class="c1"># Working...</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">sleep</span>
+<span class="c1"># Sleeping...</span>
+</code></pre>
+
+<p>Both methods were executed, but <code>work</code> was taken from the <code>Employee</code> class, while <code>sleep</code> was taken form the <code>Person</code> class.</p>
+
+<p>When a method is overridden, the superclass&rsquo;s method is hidden and the subclass&rsquo;s one is the only one that can be executed.</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+  <span class="k">def</span> <span class="nf">sleep</span>
+    <span class="nb">puts</span> <span class="s2">"Sleeping..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">eat</span>
+    <span class="nb">puts</span> <span class="s2">"Eating..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">run</span>
+    <span class="nb">puts</span> <span class="s2">"Running..."</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+  <span class="k">def</span> <span class="nf">work</span>
+    <span class="nb">puts</span> <span class="s2">"Working..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">sleep</span>
+    <span class="nb">puts</span> <span class="s1">'sleeping at work.'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Here, the <code>work</code> method is defined in the <code>Person</code> class, but it is also defined in the <code>Employee</code> class, so when is executed from the <code>employee</code> object, the one executed is in the <code>Employee</code> class.</p>
+<pre class="highlight ruby"><code><span class="n">employee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">sleep</span>
+<span class="c1"># sleeping at work.</span>
+</code></pre>
+
+<h2>Calling a superclass&rsquo;s method from a subclass</h2>
+
+<p>It is possible that the <code>Employee</code>&rsquo;s <code>sleep</code> method needs to reuse code from <code>Person</code>&rsquo;s <code>sleep</code>. Instead of copy-paste, we can simply call the superclass&rsquo;s method. But there is a gotcha: we can not call <code>sleep</code> directly because that would provokes a recursive call over itself. Example:</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+  <span class="k">def</span> <span class="nf">work</span>
+    <span class="nb">puts</span> <span class="s2">"Working..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">sleep</span>
+    <span class="nb">sleep</span> <span class="c1"># try to call the superclass's method</span>
+    <span class="nb">puts</span> <span class="s2">"at work"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Trying execute the <code>sleep</code> method will generate a <code>stack level too deep (SystemStackError)</code>. In these cases, we must use the keyword <code>super</code>.</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+  <span class="k">def</span> <span class="nf">work</span>
+    <span class="nb">puts</span> <span class="s2">"Working..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">sleep</span>
+    <span class="k">super</span> <span class="c1"># try to call the superclass's method</span>
+    <span class="nb">puts</span> <span class="s2">"at work"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Thus, the <code>Employee</code>&rsquo;s <code>sleep</code> method can use the functionality of the <code>Person</code>&rsquo;s <code>sleep</code> method.</p>
+<pre class="highlight ruby"><code><span class="n">employee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">sleep</span>
+<span class="c1"># Sleeping...</span>
+<span class="c1"># at work</span>
+</code></pre>
+
+<h2>How to call <code>super</code> with parameters</h2>
+
+<p>Now, this method has a particular behavior that is necessary to know in order to avoid some mistakes.</p>
+
+<p>If the superclass&rsquo;s method receives parameters, is possible to pass them explicitly or implicitly. Explicitly means we have to specify the parameters during the calling; implicitly means we can just call super with no parameters. In the following example we can see both behaviors. <code>slepp</code> and <code>play</code> receives two parameters, both in superclass as in subclass. However, calling super in the first method is made with parameters and in the second method is made without parameters. Both works correctly.</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+  <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Sleeping... </span><span class="si">#{</span><span class="n">hours</span><span class="si">}</span><span class="s2"> hours, </span><span class="si">#{</span><span class="n">minutes</span><span class="si">}</span><span class="s2"> minutes"</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">eat</span>
+    <span class="nb">puts</span> <span class="s2">"Eating..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">run</span>
+    <span class="nb">puts</span> <span class="s2">"Running..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Playing... </span><span class="si">#{</span><span class="n">hours</span><span class="si">}</span><span class="s2"> ours, </span><span class="si">#{</span><span class="n">minutes</span><span class="si">}</span><span class="s2"> minutes"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+  <span class="k">def</span> <span class="nf">work</span>
+    <span class="nb">puts</span> <span class="s2">"Working..."</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">sleep</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span>
+    <span class="k">super</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"... at work"</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">play</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span>
+    <span class="k">super</span>
+    <span class="nb">puts</span> <span class="s2">"... at work"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Executing, we have this result:</p>
+<pre class="highlight ruby"><code><span class="n">employee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span> 
+<span class="c1"># Sleeping... 2 hours, 30 minutes</span>
+<span class="c1"># ... at work</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">play</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> 
+<span class="c1"># Playing... 3 hours, 10 minutes</span>
+<span class="c1"># ... at work</span>
+</code></pre>
+
+<p>Calling <code>super</code> with no parameters provokes ruby to include them automatically.</p>
+
+<h3>Different number of parameters</h3>
+
+<p>Ideally, we should follow the <a href="https://en.wikipedia.org/wiki/Liskov_substitution_principle">Liskov substitution principle</a> and therefor the scenario we are going to see would never happen. However, in the real word, it can happen (sometimes, more often than we want), so we have to contemplate it. If the superclass&rsquo;s method receives a different number of parameters, an error will be raised.</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Resting... </span><span class="si">#{</span><span class="n">hours</span><span class="si">}</span><span class="s2"> hours, </span><span class="si">#{</span><span class="n">minutes</span><span class="si">}</span><span class="s2"> minutes"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="n">minutes</span><span class="p">)</span>
+    <span class="k">super</span>
+    <span class="nb">puts</span> <span class="s2">"... at work"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Executing:</p>
+<pre class="highlight ruby"><code><span class="n">employee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">rest</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+<span class="c1"># ArgumentError: wrong number of arguments (1 for 2)</span>
+</code></pre>
+
+<p>The problem was Ruby detected the call to <code>super</code> with no parameters and, automatically, adds them. The problem was that the number of parameters doesn&rsquo;t match. In these cases, we have to call <code>super</code> specifying the parameters explicitly.</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"Resting... </span><span class="si">#{</span><span class="n">hours</span><span class="si">}</span><span class="s2"> hours, </span><span class="si">#{</span><span class="n">minutes</span><span class="si">}</span><span class="s2"> minutes"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">rest</span><span class="p">(</span><span class="n">minutes</span><span class="p">)</span>
+    <span class="k">super</span><span class="p">(</span><span class="n">minutes</span> <span class="o">/</span> <span class="mi">60</span><span class="p">,</span> <span class="n">minutes</span> <span class="o">%</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"... at work"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Execution:</p>
+<pre class="highlight ruby"><code><span class="n">employee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">rest</span><span class="p">(</span><span class="mi">90</span><span class="p">)</span>
+<span class="c1"># Resting... 1 hours, 30 minutes</span>
+<span class="c1"># ... at work</span>
+</code></pre>
+
+<h3>Superclass&rsquo;s method with no parameters and subclass&rsquo;s methods with parameters</h3>
+
+<p>One more scenario. What happen when the superclass&rsquo;s method doesn&rsquo;t receive parameters but the subclass&rsquo;s one does?</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">program</span>
+    <span class="nb">puts</span> <span class="s2">"Programming..."</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">program</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="k">super</span>
+    <span class="nb">puts</span> <span class="s2">"... project </span><span class="si">#{</span><span class="n">project</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>We get the following error:</p>
+<pre class="highlight ruby"><code><span class="n">employee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">program</span><span class="p">(</span><span class="s2">"Personal"</span><span class="p">)</span>
+<span class="c1"># person.rb:5:in `program': wrong number of arguments (1 for 0) (ArgumentError)</span>
+<span class="c1">#        from person.rb:15:in `program'</span>
+</code></pre>
+
+<p>The error is that when executing <code>super</code>, Ruby adds the parameters automatically and that provokes the fail because the superclass&rsquo;s method doesn&rsquo;t receive any parameters. For these cases, the solution is to call the method with the parenthesis, like if we were including parameters, but leaving them empty. This way, Ruby understand that it should not add parameters automatically.</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">program</span>
+    <span class="nb">puts</span> <span class="s2">"Programming..."</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">program</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+    <span class="k">super</span><span class="p">()</span>
+    <span class="nb">puts</span> <span class="s2">"... project </span><span class="si">#{</span><span class="n">project</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Execution:</p>
+<pre class="highlight ruby"><code><span class="n">employee</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">employee</span><span class="p">.</span><span class="nf">program</span><span class="p">(</span><span class="s2">"Personal"</span><span class="p">)</span>
+<span class="c1"># Programming...</span>
+<span class="c1"># ... project Important</span>
+</code></pre>
+
+<h3>The <code>initialize</code> method</h3>
+
+<p>The same principle applies for the constructor.</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Person</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span>
+    <span class="c1"># code to initialize a person</span>
+  <span class="k">end</span>
+
+  <span class="c1"># ...</span>
+
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">Person</span>
+
+  <span class="kp">attr_reader</span> <span class="ss">:employee_number</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">employee_number</span><span class="p">)</span>
+    <span class="k">super</span><span class="p">()</span>
+    <span class="vi">@employee_number</span> <span class="o">=</span> <span class="n">employee_number</span>
+  <span class="k">end</span>
+
+  <span class="c1"># ...</span>
+
+<span class="k">end</span>
+</code></pre>
+
+<h2>Final thoughts</h2>
+
+<p>Using inheritance in Ruby implies knowing how the methods interact inside the hierarchy, specially when we want to reuse the behaviour it provides. Using <code>super</code> is essential in these cases, and knowing how it works allows us to use the language&rsquo;s properties in a correct way.</p>
+
+  </article>
+
+      </section>
+      <footer>
+  <div class="container">
+    <ul class="large-column">
+      <li><h5 class="heading">Recent Articles</h5></li>
+      <li>
+        <ol>
+            <li>
+              <a href="/2015/05/04/directory-tree.html">Directory tree</a>
+              <span>May  4</span>
+            </li>
+            <li>
+              <a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html">Directory structure conventions in RSpec and Minitest</a>
+              <span>Apr 13</span>
+            </li>
+            <li>
+              <a href="/2015/01/12/joins-vs-includes-espanol.html">Joins vs Includes (Español)</a>
+              <span>Jan 12</span>
+            </li>
+            <li>
+              <a href="/2014/12/08/joins-vs-includes.html">Joins vs Includes</a>
+              <span>Dec  8</span>
+            </li>
+            <li>
+              <a href="/2014/09/01/minitest-v4-y-v5.html">Minitest v4 y  v5</a>
+              <span>Sep  1</span>
+            </li>
+            <li>
+              <a href="/2014/07/14/minitest-v4-and-v5.html">Minitest v4 and v5</a>
+              <span>Jul 14</span>
+            </li>
+            <li>
+              <a href="/2014/03/11/formularios-anidados.html">Formularios anidados</a>
+              <span>Mar 11</span>
+            </li>
+            <li>
+              <a href="/2014/02/10/como-solucionar-las-consultas-n-1-en-rails.html">Cómo solucionar consultas N+1 en Rails</a>
+              <span>Feb 10</span>
+            </li>
+            <li>
+              <a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html">How to fix N+1 queries in Rails</a>
+              <span>Feb  3</span>
+            </li>
+            <li>
+              <a href="/2014/01/13/super-in-ruby.html">Super in Ruby</a>
+              <span>Jan 13</span>
+            </li>
+        </ol>
+      </li>
+    </ul>
+
+    <ul class="small-column">
+      <li><h5 class="heading">Tags</h5></li>
+      <li>
+        <ol>
+            <li><a href="/tags/rails.html">Rails (8)</a></li>
+            <li><a href="/tags/activerecord.html">ActiveRecord (7)</a></li>
+            <li><a href="/tags/nested_attributes.html">nested_attributes (1)</a></li>
+            <li><a href="/tags/formularios.html">formularios (1)</a></li>
+            <li><a href="/tags/ruby.html">Ruby (5)</a></li>
+            <li><a href="/tags/struct.html">Struct (1)</a></li>
+            <li><a href="/tags/openstruct.html">OpenStruct (1)</a></li>
+            <li><a href="/tags/asociaciones.html">Asociaciones (1)</a></li>
+            <li><a href="/tags/minitest.html">Minitest (3)</a></li>
+            <li><a href="/tags/rspec.html">RSpec (2)</a></li>
+            <li><a href="/tags/tree.html">tree (1)</a></li>
+        </ol>
+      </li>
+      <ul>
+  </div>
+</footer>
+
+    </div>
+  </body>
+</html>

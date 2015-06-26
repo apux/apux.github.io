@@ -1,0 +1,753 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>El Blog de ApuX - Formularios anidados</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Nunito:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Dancing Script:400,700" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="main" role="main">
+      <nav>
+  <ul>
+    <li>
+<a class="blog-title" href="/">        El Blog de Ap<span>uX</span>
+</a>      <span class="caption">My Learning about Software Development</span>
+    </li>
+  </ul>
+</nav>
+
+      <section id="content">
+          <article>
+    <h1 class="heading">
+      Formularios anidados
+      <time>Mar 11 2014</time>
+    </h1>
+    <p>En ocasiones, tenemos modelos asociados que necesitamos manipular en un único
+formulario en lugar de tener un formulario por cada uno de ellos. La gema
+<code>nested_form</code> nos permite crear formularios complejos cuando trabajamos con
+modelos anidados, su uso es realmente sencillo y su
+<a href="https://github.com/ryanb/nested_form">documentación</a> cubre los aspectos más
+comunes. Sin embargo, existen algunos escenarios en los que debemos de tener
+algunas consideraciones adicionales para que todo funcione correctamente,
+especialmente con Rails 4.</p>
+
+<p>En este tutorial, veremos cómo utilizar esta gema cuando incluimos relaciones
+<em>uno a muchos</em> y <em>muchos a muchos</em> en nuestros modelos.</p>
+
+<h2>Creación del proyecto</h2>
+
+<p>Para este tutorial, trabajaremos con un proyecto en Rails 4.1. Al momento de 
+escribir este tutorial, es una versión que todavía está en RC, por lo que se se 
+instala de la siguiente manera:</p>
+<pre class="highlight plaintext"><code>gem install rails --pre
+</code></pre>
+
+<p>Para empezar, agregamos la gema <code>nested_form</code> a nuestro proyecto.</p>
+<pre class="highlight plaintext"><code>echo "gem 'nested_form'" &gt;&gt; Gemfile
+</code></pre>
+
+<p>Y ejecutamos</p>
+<pre class="highlight plaintext"><code>bundle install
+</code></pre>
+
+<p>Ahora debemos agregar el <em>javascript</em> de la gema al <em>asset pipeline</em>. En el
+archivo <code>application.js</code>, ingresamos la siguiente línea:</p>
+<pre class="highlight plaintext"><code>//= require jquery_nested_form
+</code></pre>
+
+<p>Nota: La versión de <code>nested_form</code> utilizada para este post es <code>0.3.2</code>.</p>
+
+<h2>Creación de modelos</h2>
+
+<p>Trabajaremos con tres modelos relacionados entre sí. El modelo <code>Proyecto</code> tiene
+muchas <code>Tareas</code> (relación uno a muchos), y las <code>Tareas</code> están asociadas a muchos
+<code>Empleados</code> (relación muchos a muchos).</p>
+
+<p>Por comodidad, usaremos <code>scaffold</code> para generar los recursos de <code>Proyecto</code> y
+<code>Empleado</code>, mientras que <code>Tarea</code> no tendrá ni vista ni controlador propio, sino 
+que se creará a través del formulario de <code>Proyecto</code>, que es donde utilizaremos 
+la gema <code>nested_form</code> que acabamos de instalar.</p>
+<pre class="highlight plaintext"><code>rails generate scaffold proyecto nombre fecha_entrega:date
+rails generate scaffold empleado nombre_completo
+rails generate model tarea nombre prioridad:integer proyecto:references
+</code></pre>
+
+<p>Para la relación muchos a muchos entre <code>tareas</code> y <code>empleados</code> necesitamos
+una migración adicional para crear la tabla intermedia entre estos dos
+modelos. En Rails 4, podemos hacerlo de la siguiente manera:</p>
+<pre class="highlight plaintext"><code>rails generate migration create_join_table_empleados_tareas empleado tarea
+</code></pre>
+
+<p>Este comando nos genera una migración que crea la tabla intermedia para nuestra
+relación muchos a muchos:</p>
+<pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">CreateJoinTableEmpleadosTareas</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_join_table</span> <span class="ss">:empleados</span><span class="p">,</span> <span class="ss">:tareas</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="c1"># t.index [:empleado_id, :tarea_id]</span>
+      <span class="c1"># t.index [:tarea_id, :empleado_id]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Ahora creamos la base de datos y generamos las tablas por medio de las
+migraciones. En este ejemplo, utilizaremos SQLite como manejador de base de 
+datos, por lo que no es necesario configurar nada más. Si prefieres utilizar 
+MySql, Postgres o algún otro manejador, asegúrate de incluir su gema 
+correspondiente en el archivo <code>Gemfile</code> y adaptar el archivo 
+<code>config/database.yml</code>.</p>
+<pre class="highlight plaintext"><code>rake db:create
+rake db:migrate
+</code></pre>
+
+<p>Modificamos los modelos correspondientes para que incluyan las relaciones que
+hemos creado en la base de datos:</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/proyecto.rb</span>
+<span class="k">class</span> <span class="nc">Proyecto</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:tareas</span>
+<span class="k">end</span>
+
+<span class="c1"># app/models/tarea.rb</span>
+<span class="k">class</span> <span class="nc">Tarea</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:proyecto</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:empleados</span>
+<span class="k">end</span>
+
+<span class="c1"># app/models/empleado.rb</span>
+<span class="k">class</span> <span class="nc">Empleado</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:tareas</span>
+<span class="k">end</span>
+</code></pre>
+
+<h2>Datos de inicio</h2>
+
+<p>Agreamos empleados a la base de datos por medio del archivo <code>db/seeds.rb</code>.</p>
+<pre class="highlight ruby"><code><span class="c1"># db/seeds.rb</span>
+<span class="no">Empleado</span><span class="p">.</span><span class="nf">create!</span> <span class="p">[</span>
+  <span class="p">{</span><span class="ss">nombre_completo: </span><span class="s1">'Juan Pérez'</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">nombre_completo: </span><span class="s1">'Pedro López'</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">nombre_completo: </span><span class="s1">'María Hernández'</span><span class="p">},</span>
+  <span class="p">{</span><span class="ss">nombre_completo: </span><span class="s1">'Carlos Sánchez'</span><span class="p">},</span>
+<span class="p">]</span>
+</code></pre>
+
+<p>Para almacenar esa información en la base de datos:</p>
+<pre class="highlight plaintext"><code>rake db:seed
+</code></pre>
+
+<p>Por supuesto, también podemos agregar empleados manualmente desde nuestra
+aplicación, ejecutando <code>rails server</code>, y accediendo a la ruta <code>empleados/new</code>.</p>
+
+<h2>Formulario de proyectos</h2>
+
+<p>Ya con nuestros modelos creados, debemos trabajar con el formulario de
+proyectos, donde podemos crear un proyecto que contenga muchas tareas que a su
+vez estén asociadas con muchos empleados.</p>
+
+<p>El formulario que nos creó el <em>scaffold</em> es el siguiente:</p>
+
+<p><code>app/views/proyectos/_form.html.erb</code></p>
+<pre class="highlight erb"><code><span class="cp">&lt;%=</span> <span class="n">form_for</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"error_explanation"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;h2&gt;</span><span class="cp">&lt;%=</span> <span class="n">pluralize</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">count</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">)</span> <span class="cp">%&gt;</span> prohibited this proyecto from being saved:<span class="nt">&lt;/h2&gt;</span>
+
+      <span class="nt">&lt;ul&gt;</span>
+      <span class="cp">&lt;%</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">full_messages</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">msg</span><span class="o">|</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">msg</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:nombre</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:nombre</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:fecha_entrega</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">date_select</span> <span class="ss">:fecha_entrega</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"actions"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>Para utilizar la gema, debemos utilizar el <em>helper</em> <code>nested_form_for</code> en lugar de
+<code>form_for</code> y agregar los campos de las tareas. Rails nos provee de un <em>helper</em>
+para agregar campos a objetos asociados: <code>fields_for</code>. El formulario quedaría de
+la siguiente manera:</p>
+
+<p><code>app/views/proyectos/_form.html.erb</code></p>
+<pre class="highlight erb"><code><span class="cp">&lt;%=</span> <span class="n">nested_form_for</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"error_explanation"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;h2&gt;</span><span class="cp">&lt;%=</span> <span class="n">pluralize</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">count</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">)</span> <span class="cp">%&gt;</span> prohibited this proyecto from being saved:<span class="nt">&lt;/h2&gt;</span>
+
+      <span class="nt">&lt;ul&gt;</span>
+      <span class="cp">&lt;%</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">full_messages</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">msg</span><span class="o">|</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">msg</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:nombre</span><span class="p">,</span> <span class="s1">'Nombre del proyecto'</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:nombre</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:fecha_entrega</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">date_select</span> <span class="ss">:fecha_entrega</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;fieldset</span> <span class="na">id=</span><span class="s">"tareas"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">fields_for</span> <span class="ss">:tareas</span> <span class="k">do</span> <span class="o">|</span><span class="n">tareas_form</span><span class="o">|</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">tareas_form</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:nombre</span><span class="p">,</span> <span class="s1">'Nombre de la tarea'</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">tareas_form</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:nombre</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/div&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>      
+        <span class="cp">&lt;%=</span> <span class="n">tareas_form</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:prioridad</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">tareas_form</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:prioridad</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/div&gt;</span>
+      <span class="cp">&lt;%=</span> <span class="n">tareas_form</span><span class="p">.</span><span class="nf">link_to_remove</span> <span class="s2">"Eliminar esta tarea"</span> <span class="cp">%&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;p&gt;</span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">link_to_add</span> <span class="s2">"Agregar una tarea"</span><span class="p">,</span> <span class="ss">:tareas</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/fieldset&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"actions"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<h3>Uso de <code>accepts_nested_attributes_for</code></h3>
+
+<p>Si en estos momentos entramos a nuestra aplicación e intentamos crear un
+proyecto, obtendremos el siguiente error:</p>
+<pre class="highlight plaintext"><code>Invalid association. Make sure that accepts_nested_attributes_for is used for :tareas association.
+</code></pre>
+
+<p>Esto es porque nuestro formulario de <code>Proyecto</code> incluye ya los atributos
+anidados de <code>Tareas</code>, pero no hemos configurado nuestros modelos para que
+permita recibir estos campos.</p>
+
+<p>En nuestro modelo <code>Proyecto</code> agregamos el <code>accepts_nested_attributes_for</code>:</p>
+<pre class="highlight ruby"><code><span class="c1"># app/models/proyecto.rb</span>
+<span class="k">class</span> <span class="nc">Proyecto</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:tareas</span>
+  <span class="n">accepts_nested_attributes_for</span> <span class="ss">:tareas</span><span class="p">,</span> <span class="ss">allow_destroy: </span><span class="kp">true</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>De esta manera, <code>Proyecto</code> puede recibir y procesar los atributos de tareas
+mediante la llave <code>tareas_attributes</code>. Ejemplo:</p>
+<pre class="highlight ruby"><code><span class="no">Proyecto</span><span class="p">.</span><span class="nf">create</span> <span class="ss">nombre: </span><span class="s1">'Mi proyecto'</span><span class="p">,</span>
+             <span class="ss">fecha_entrega:  </span><span class="mi">1</span><span class="p">.</span><span class="nf">month</span><span class="p">.</span><span class="nf">from_now</span><span class="p">,</span>
+             <span class="ss">tareas_attributes: </span><span class="p">[</span>
+                                 <span class="p">{</span><span class="ss">nombre: </span><span class="s1">'Tarea 1'</span><span class="p">,</span> <span class="ss">prioridad: </span><span class="mi">5</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="ss">nombre: </span><span class="s1">'Tarea 2'</span><span class="p">,</span> <span class="ss">prioridad: </span><span class="mi">3</span><span class="p">}</span>
+             <span class="p">]</span>
+</code></pre>
+
+<p>Con esto, le indicamos a ActiveRecord que cree un proyecto con dos tareas.</p>
+
+<p>La opción <code>allow_destroy</code> nos permitirá eliminar alguna tarea de la lista de
+tareas agregando la bandera <code>:_destroy</code>. Ejemplo:</p>
+<pre class="highlight ruby"><code><span class="no">Proyecto</span><span class="p">.</span><span class="nf">create</span> <span class="ss">nombre: </span><span class="s1">'Mi proyecto'</span><span class="p">,</span>
+             <span class="ss">fecha_entrega:  </span><span class="mi">1</span><span class="p">.</span><span class="nf">month</span><span class="p">.</span><span class="nf">from_now</span><span class="p">,</span>
+             <span class="ss">tareas_attributes: </span><span class="p">[</span>
+                                 <span class="p">{</span><span class="ss">nombre: </span><span class="s1">'Tarea 1'</span><span class="p">,</span> <span class="ss">prioridad: </span><span class="mi">5</span><span class="p">},</span>
+                                 <span class="p">{</span><span class="ss">nombre: </span><span class="s1">'Tarea 2'</span><span class="p">,</span> <span class="ss">prioridad: </span><span class="mi">3</span><span class="p">,</span> <span class="ss">_destroy: </span><span class="kp">true</span> <span class="p">}</span>
+             <span class="p">]</span>
+</code></pre>
+
+<p>Con esto, le indicamos a ActiveRecord que cree un proyecto con una sola tarea
+(<code>Tarea 1</code>), ya que <code>Tarea 2</code> está marcada para ser eliminada y por lo tanto no
+se crea. Si la tarea ya existe previamente, al incluir la opción <code>_destroy:
+true</code> se borrará también de la base de datos, pero para eso habrá que
+especificar el <code>id</code>, como veremos más adelante.</p>
+
+<p>Si tratamos de entrar a nuestro formulario de proyectos (/proyectos/new) veremos
+que el formulario se muestra correctamente y podemos agregar o eliminar tareas
+visualmente de manera dinámica.</p>
+
+<h2>Agregar tareas por omisión</h2>
+
+<p>Si queremos que nuestro proyecto se muestre inicialmente con algunas tareas
+asociadas, podemos agregar algunas desde el controlador. Ejemplo:</p>
+<pre class="highlight ruby"><code><span class="c1">#app/controllers/proyectos_controller.rb</span>
+<span class="k">def</span> <span class="nf">new</span>
+  <span class="vi">@proyecto</span> <span class="o">=</span> <span class="no">Proyecto</span><span class="p">.</span><span class="nf">new</span>
+  <span class="mi">2</span><span class="p">.</span><span class="nf">times</span> <span class="p">{</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">tareas</span><span class="p">.</span><span class="nf">build</span> <span class="p">}</span>
+<span class="k">end</span>
+</code></pre>
+
+<h2>Parciales</h2>
+
+<p>En nuestro ejemplo, el modelo <code>Proyecto</code> tiene dos campos, y el modelo <code>Tarea</code>
+otros dos, pero en un caso real, ambos tendrían muchos más campos y mostrarlos
+todos dejaría un tanto sucio el código de nuestro formulario. En esos casos, es
+mejor utilizar parciales.</p>
+
+<p><code>nested_form</code> permite el uso de parciales de una manera elegante. Necesitamos
+crear una parcial con el nombre en singular de nuestro modelo más el sufijo
+<code>_fields</code>. En la nueva parcial, la variable del formulario anidado
+(<code>tareas_form</code> en nuestro caso), se pasa simplemente como <code>f</code>.  Los archivos
+quedarían de la siguiente manera:</p>
+
+<p>El formulario principal de proyectos de proyectos.</p>
+
+<p><code>app/views/proyectos/_form.html.erb</code></p>
+<pre class="highlight erb"><code><span class="cp">&lt;%=</span> <span class="n">nested_form_for</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">if</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">any?</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"error_explanation"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;h2&gt;</span><span class="cp">&lt;%=</span> <span class="n">pluralize</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">count</span><span class="p">,</span> <span class="s2">"error"</span><span class="p">)</span> <span class="cp">%&gt;</span> prohibited this proyecto from being saved:<span class="nt">&lt;/h2&gt;</span>
+
+      <span class="nt">&lt;ul&gt;</span>
+      <span class="cp">&lt;%</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">errors</span><span class="p">.</span><span class="nf">full_messages</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">msg</span><span class="o">|</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;li&gt;</span><span class="cp">&lt;%=</span> <span class="n">msg</span> <span class="cp">%&gt;</span><span class="nt">&lt;/li&gt;</span>
+      <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:nombre</span><span class="p">,</span> <span class="s1">'Nombre del proyecto'</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:nombre</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:fecha_entrega</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">date_select</span> <span class="ss">:fecha_entrega</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;fieldset</span> <span class="na">id=</span><span class="s">"tareas"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">fields_for</span> <span class="ss">:tareas</span> <span class="cp">%&gt;</span>
+    <span class="nt">&lt;p&gt;</span><span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">link_to_add</span> <span class="s2">"Agregar una tarea"</span><span class="p">,</span> <span class="ss">:tareas</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+  <span class="nt">&lt;/fieldset&gt;</span>
+  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"actions"</span><span class="nt">&gt;</span>
+    <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">submit</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>La nueva parcial:</p>
+
+<p><code>app/views/proyectos/_tarea_fields.html.erb</code></p>
+<pre class="highlight erb"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:nombre</span><span class="p">,</span> <span class="s1">'Nombre de la tarea'</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:nombre</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:prioridad</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:prioridad</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">link_to_remove</span> <span class="s2">"Eliminar esta tarea"</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>Como vemos, queda más limpio y mejor organizado.</p>
+
+<h2>Show</h2>
+
+<p>Antes de crear un proyecto por medio del formulario, modificaremos el <code>show</code>
+para mostrar no sólo los datos del proyecto sino también los de las tareas
+asociadas. Así podremos saber si las tareas se crearon correctamente.</p>
+
+<p><code>app/views/proyectos/show.html.erb</code></p>
+<pre class="highlight erb"><code><span class="nt">&lt;p</span> <span class="na">id=</span><span class="s">"notice"</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">notice</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;strong&gt;</span>Nombre:<span class="nt">&lt;/strong&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">nombre</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;strong&gt;</span>Fecha entrega:<span class="nt">&lt;/strong&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">fecha_entrega</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;strong&gt;</span>Tareas:<span class="nt">&lt;/strong&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    <span class="cp">&lt;%</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">tareas</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">tarea</span><span class="o">|</span> <span class="cp">%&gt;</span>
+      Nombre: <span class="cp">&lt;%=</span> <span class="n">tarea</span><span class="p">.</span><span class="nf">nombre</span> <span class="cp">%&gt;</span><span class="nt">&lt;br/&gt;</span>
+      Prioridad: <span class="cp">&lt;%=</span> <span class="n">tarea</span><span class="p">.</span><span class="nf">prioridad</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;hr/&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Edit'</span><span class="p">,</span> <span class="n">edit_proyecto_path</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">)</span> <span class="cp">%&gt;</span> |
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Back'</span><span class="p">,</span> <span class="n">proyectos_path</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<h2>Strong parameters</h2>
+
+<p>Ahora sí, es momento de crear nuestro primer proyecto por medio del formulario.
+Ingresamos los datos tanto del proyecto como de las tareas, y damos clic en el
+botón de <em>submit</em>.</p>
+
+<p>La página de <code>show</code> nos muestra el nombre del proyecto y la fecha de entrega
+pero la lista de tareas está vacía, lo que significa que algo falló en el
+proceso.</p>
+
+<p>El problema se encuentra en el controlador. Rails 4 incluye <code>strong_parameters</code>,
+que valida que se reciban sólo atributos autorizados para un formulario. Por
+omisión, al ejecutar el <em>scaffold</em>, sólo se autorizan los campos que se incluyen
+en el modelo <code>Proyecto</code>, por lo que tenemos que agregar a mano los campos del
+modelo <code>Tarea</code>, incluyendo el atributo <code>_destroy</code>, para que una tarea pueda ser
+eliminada de la lista. Estos atributos se agregan a la lista que recibe el
+método <code>permit</code> como un <em>hash</em>, donde la llave es <code>tareas_attributes</code> y el valor
+es un arreglo con los nombres de los campos.</p>
+<pre class="highlight ruby"><code><span class="c1"># app/controllers/proyectos_controller.rb</span>
+
+<span class="c1"># [...]</span>
+
+<span class="c1"># Never trust parameters from the scary internet, only allow the white list through.</span>
+<span class="k">def</span> <span class="nf">proyecto_params</span>
+  <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:proyecto</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span>
+    <span class="ss">:nombre</span><span class="p">,</span> <span class="ss">:fecha_entrega</span><span class="p">,</span> <span class="ss">tareas_attributes: </span><span class="p">[</span>
+      <span class="ss">:nombre</span><span class="p">,</span> <span class="ss">:prioridad</span><span class="p">,</span> <span class="ss">:_destroy</span>
+    <span class="p">]</span>
+  <span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Y ahora sí, al crear un proyecto con tareas, éstas se crearán correctamente.</p>
+
+<h2>Update</h2>
+
+<p>Ahora bien, si queremos modificar un proyecto que ya hayamos ingresado, podemos
+hacerlo en el <em>path</em> correspondiente, por ejemplo, /proyectos/1/edit.</p>
+
+<p>Sin embargo, aquí notamos un comportamiento extraño. En lugar de actualizar las
+tareas, crea siempre tareas nuevas. Es decir, mantiene las tareas creadas
+anteriormente y trata las tareas que estamos modificando como si las estuvieras
+agregando.  Vemos también otro error: si queremos eliminar una tarea, ésta no se
+elimina, sino que sigue ahí.</p>
+
+<p>Este comportamiento sucede porque para realizar la modificación, ActiveRecord
+espera recibir como parámetro, el id del modelo a modificar. Si el id
+corresponde a un registro de la base de datos, entonces lo modifica. Ejemplo:</p>
+
+<p>Imaginemos un proyecto con dos tareas, las tareas tienen los ids 1 y 2
+respectivamente.</p>
+<pre class="highlight ruby"><code><span class="n">proyecto</span> <span class="o">=</span> <span class="no">Proyecto</span><span class="p">.</span><span class="nf">first</span>
+<span class="n">proyecto</span><span class="p">.</span><span class="nf">update</span> <span class="ss">nombre: </span><span class="s1">'Mi nuevo proyecto'</span><span class="p">,</span>
+             <span class="ss">fecha_entrega:  </span><span class="mi">1</span><span class="p">.</span><span class="nf">week</span><span class="p">.</span><span class="nf">from_now</span><span class="p">,</span>
+             <span class="ss">tareas_attributes: </span><span class="p">[</span>
+                                 <span class="p">{</span><span class="ss">nombre: </span><span class="s1">'Tarea nueva'</span><span class="p">,</span> <span class="ss">prioridad: </span><span class="mi">1</span> <span class="p">},</span>
+                                 <span class="p">{</span><span class="ss">id: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">nombre: </span><span class="s1">'Tarea modificada'</span><span class="p">,</span> <span class="ss">prioridad: </span><span class="mi">4</span> <span class="p">},</span>
+                                 <span class="p">{</span><span class="ss">id: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">nombre: </span><span class="s1">'Tarea 2'</span><span class="p">,</span> <span class="ss">prioridad: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">_destroy: </span><span class="kp">true</span> <span class="p">}</span>
+             <span class="p">]</span>
+</code></pre>
+
+<p>Este fragmento de código actualiza los datos del proyecto, incluyendo sus
+tareas. La primera tarea no lleva id, por lo que simplemente se crea y
+se asocia al proyecto. Las siguientes dos tareas sí llevan id, por lo que se
+entiende que ya existen previamente y están asociadas a ese proyecto; esas
+tareas se actualizan. En este caso, la tarea con id 1 sólo actualiza sus datos,
+mientras que la tarea con id 2 se elimina porque incluye la bandera <code>_destroy</code>
+como <code>true</code>.</p>
+
+<h3>Strong parameters</h3>
+
+<p>Conociendo la teoría, la solución es sencilla. Basta con agregar a la lista de
+parámetros aceptados, el id de las tareas. Para esto, modificamos de nuevo la
+lista de nuestros <em>strong parameters</em>.</p>
+<pre class="highlight ruby"><code><span class="c1"># app/controllers/proyectos_controller.rb</span>
+
+<span class="c1"># [...]</span>
+
+<span class="c1"># Never trust parameters from the scary internet, only allow the white list through.</span>
+<span class="k">def</span> <span class="nf">proyecto_params</span>
+  <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:proyecto</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span>
+    <span class="ss">:nombre</span><span class="p">,</span> <span class="ss">:fecha_entrega</span><span class="p">,</span> <span class="ss">tareas_attributes: </span><span class="p">[</span>
+      <span class="ss">:id</span><span class="p">,</span> <span class="ss">:nombre</span><span class="p">,</span> <span class="ss">:prioridad</span><span class="p">,</span> <span class="ss">:_destroy</span>
+    <span class="p">]</span>
+  <span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Y listo. Con eso podemos modificar y eliminar tareas correctamente desde nuestro
+formulario de proyectos.</p>
+
+<h2>Muchos a muchos</h2>
+
+<p>Ya hemos asociado correctamente proyectos y tareas desde un solo formulario,
+pero aún nos falta asociar tareas y empleados, que es una relación muchos a
+muchos.</p>
+
+<p>Lo primero que modificaremos será nuestro <code>show</code> para incluir información sobre
+los empleados.</p>
+
+<p><code>app/views/proyectos/show.html.erb</code></p>
+<pre class="highlight erb"><code><span class="nt">&lt;p</span> <span class="na">id=</span><span class="s">"notice"</span><span class="nt">&gt;</span><span class="cp">&lt;%=</span> <span class="n">notice</span> <span class="cp">%&gt;</span><span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;strong&gt;</span>Nombre:<span class="nt">&lt;/strong&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">nombre</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;strong&gt;</span>Fecha entrega:<span class="nt">&lt;/strong&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">fecha_entrega</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+
+<span class="nt">&lt;p&gt;</span>
+  <span class="nt">&lt;strong&gt;</span>Tareas:<span class="nt">&lt;/strong&gt;</span>
+  <span class="nt">&lt;p&gt;</span>
+    <span class="cp">&lt;%</span> <span class="vi">@proyecto</span><span class="p">.</span><span class="nf">tareas</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">tarea</span><span class="o">|</span> <span class="cp">%&gt;</span>
+      Nombre: <span class="cp">&lt;%=</span> <span class="n">tarea</span><span class="p">.</span><span class="nf">nombre</span> <span class="cp">%&gt;</span><span class="nt">&lt;br/&gt;</span>
+      Prioridad: <span class="cp">&lt;%=</span> <span class="n">tarea</span><span class="p">.</span><span class="nf">prioridad</span> <span class="cp">%&gt;</span><span class="nt">&lt;br/&gt;</span>
+      Empleados: <span class="cp">&lt;%=</span> <span class="n">tarea</span><span class="p">.</span><span class="nf">empleados</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:nombre_completo</span><span class="p">).</span><span class="nf">to_sentence</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;hr/&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Edit'</span><span class="p">,</span> <span class="n">edit_proyecto_path</span><span class="p">(</span><span class="vi">@proyecto</span><span class="p">)</span> <span class="cp">%&gt;</span> |
+<span class="cp">&lt;%=</span> <span class="n">link_to</span> <span class="s1">'Back'</span><span class="p">,</span> <span class="n">proyectos_path</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>Ahora procedemos a modifcar nuestro formulario para incluir empleados.</p>
+
+<p>Como primer recurso, recurro a este
+<a href="http://railscasts.com/episodes/17-habtm-checkboxes">railscast</a>, donde se
+muestra una forma de hacerlo utilizando <code>chec_kbox_tag</code>.</p>
+
+<p>En un formulario normal, la asociación podría hacerce de la siguiente manera:</p>
+<pre class="highlight erb"><code><span class="cp">&lt;%</span> <span class="no">Empleado</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">empleado</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">check_box_tag</span> <span class="s1">'tarea[empleado_ids][]'</span><span class="p">,</span>
+                    <span class="n">empleado</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+                    <span class="vi">@tarea</span><span class="p">.</span><span class="nf">empleado_ids</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="n">empleado</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">empleado</span><span class="p">.</span><span class="nf">nombre_completo</span> <span class="cp">%&gt;</span><span class="nt">&lt;br/&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>Sin embargo, eso da por sentado que la tarea es el formulario del primer nivel,
+lo que es falso para nuestro caso. Nosotros necesitaríamos de una estructura más
+compleja que incluyera el proyecto y la tarea (mediante <code>tareas_attributes</code>).</p>
+
+<p>Si analizamos el <em>request</em> que se hace cuando envía nuestro formulario, veremos
+que los parámetros llevan la siguiente estructura:</p>
+<pre class="highlight ruby"><code><span class="no">Started</span> <span class="no">POST</span> <span class="s2">"/proyectos"</span> <span class="k">for</span> <span class="mi">127</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span> <span class="n">at</span> <span class="mi">2013</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">12</span> <span class="mi">12</span><span class="p">:</span><span class="mi">41</span><span class="p">:</span><span class="mo">01</span> <span class="o">-</span><span class="mo">0500</span>
+<span class="no">Processing</span> <span class="n">by</span> <span class="no">ProyectosController</span><span class="c1">#create as HTML</span>
+  <span class="no">Parameters</span><span class="p">:</span> <span class="p">{</span><span class="s2">"utf8"</span><span class="o">=&gt;</span><span class="s2">"✓"</span><span class="p">,</span>
+               <span class="s2">"authenticity_token"</span><span class="o">=&gt;</span><span class="s2">"RtyGum+m6wIvaoOAvxcQnIlvMEPGStBmFvaTL+t+paQ="</span><span class="p">,</span>
+               <span class="s2">"proyecto"</span><span class="o">=&gt;</span><span class="p">{</span>
+                             <span class="s2">"nombre"</span><span class="o">=&gt;</span><span class="s2">"Mi proyecto"</span><span class="p">,</span>
+                             <span class="s2">"fecha_entrega(1i)"</span><span class="o">=&gt;</span><span class="s2">"2013"</span><span class="p">,</span>
+                             <span class="s2">"fecha_entrega(2i)"</span><span class="o">=&gt;</span><span class="s2">"9"</span><span class="p">,</span>
+                             <span class="s2">"fecha_entrega(3i)"</span><span class="o">=&gt;</span><span class="s2">"22"</span><span class="p">,</span>
+                             <span class="s2">"tareas_attributes"</span><span class="o">=&gt;</span><span class="p">{</span>
+                                                    <span class="s2">"0"</span><span class="o">=&gt;</span><span class="p">{</span>
+                                                           <span class="s2">"nombre"</span><span class="o">=&gt;</span><span class="s2">"Tarea 1"</span><span class="p">,</span>
+                                                           <span class="s2">"prioridad"</span><span class="o">=&gt;</span><span class="s2">"1"</span><span class="p">,</span>
+                                                           <span class="s2">"_destroy"</span><span class="o">=&gt;</span><span class="s2">"false"</span><span class="p">},</span>
+                                                    <span class="s2">"1"</span><span class="o">=&gt;</span><span class="p">{</span>
+                                                           <span class="s2">"nombre"</span><span class="o">=&gt;</span><span class="s2">"Tarea 2"</span><span class="p">,</span>
+                                                           <span class="s2">"prioridad"</span><span class="o">=&gt;</span><span class="s2">""</span><span class="p">,</span>
+                                                           <span class="s2">"_destroy"</span><span class="o">=&gt;</span><span class="s2">"false"</span><span class="p">}</span>
+                                                  <span class="p">}</span>
+                           <span class="p">},</span>
+               <span class="s2">"commit"</span><span class="o">=&gt;</span><span class="s2">"Create Proyecto"</span><span class="p">}</span>
+</code></pre>
+
+<p>Como vemos, el formulario envía <code>tareas_attributes</code> no como un arreglo sino como
+un <em>hash</em>, donde la llave es un índice para cada tarea. Si quisiéramos incluir los
+<em>checkboxes</em> de empleados, tendríamos que indicar el número de cada tarea. Otro
+aspecto a tomar en cuenta es que no tenemos <code>@tarea</code>, sino <code>@proyecto</code>, por lo
+que tendríamos que tomarlo del objeto del formulario. Algo como esto:</p>
+<pre class="highlight erb"><code><span class="cp">&lt;%=</span> <span class="n">check_box_tag</span> <span class="s2">"proyecto[tareas_attributes][</span><span class="si">#{</span><span class="n">id_tarea</span><span class="si">}</span><span class="s2">][empleado_ids][]"</span><span class="p">,</span>
+                  <span class="n">empleado</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+                  <span class="n">f</span><span class="p">.</span><span class="nf">object</span><span class="p">.</span><span class="nf">empleado_ids</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="n">empleado</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>Para el caso de nuestro ejemplo, es posible llevar el control del id de la tarea
+por medio de alguna variable generada en <code>_form</code> y pasarla a la parcial
+<code>_tareas_fields</code>, pero pensando en varios niveles de formularios anidados, sería
+muy complicado llevar el registro de cada uno de los ids de los modelos e irlos
+pasando entre parciales. Por ejemplo, si la tarea no estuviera relacionada
+directamente con empleados, sino con asignaciones, y las asignaciones con
+empleados, tendríamos un <em>tag</em> parecido a esto:</p>
+<pre class="highlight erb"><code><span class="cp">&lt;%=</span> <span class="n">check_box_tag</span><span class="p">(</span>
+    <span class="s2">"proyecto[tareas_attributes][</span><span class="si">#{</span><span class="n">tarea_index</span><span class="si">}</span><span class="s2">][asignaciones_attributes][</span><span class="si">#{</span><span class="n">asignacion_index</span><span class="si">}</span><span class="s2">][empleado_ids][]"</span><span class="p">,</span>
+    <span class="n">empleado</span><span class="p">.</span><span class="nf">id</span><span class="p">,</span>
+    <span class="n">f</span><span class="p">.</span><span class="nf">object</span><span class="p">.</span><span class="nf">empleado_ids</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="n">empleado</span><span class="p">.</span><span class="nf">id</span><span class="p">))</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>Lo que poco a poco se vuelve insostenible.</p>
+
+<p>Afortunadamente, Rails 4 incluye un <em>helper</em> para asociaciones muchos a muchos a
+través de <em>checkboxes</em>, y eso nos facilita bastante las cosas. El <em>helper</em> es
+<code>collection_check_boxes</code>. Nuestra parcial de tareas quedaría de la siguiente
+manera:</p>
+
+<p><code>app/views/proyectos/_tarea_fields.html.erb</code></p>
+<pre class="highlight erb"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:nombre</span><span class="p">,</span> <span class="s1">'Nombre de la tarea'</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:nombre</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">label</span> <span class="ss">:prioridad</span> <span class="cp">%&gt;</span><span class="nt">&lt;br&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">text_field</span> <span class="ss">:prioridad</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"field"</span><span class="nt">&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">collection_check_boxes</span> <span class="ss">:empleado_ids</span><span class="p">,</span> <span class="no">Empleado</span><span class="p">.</span><span class="nf">all</span><span class="p">,</span> <span class="ss">:id</span><span class="p">,</span> <span class="ss">:nombre_completo</span> <span class="cp">%&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">f</span><span class="p">.</span><span class="nf">link_to_remove</span> <span class="s2">"Eliminar esta tarea"</span> <span class="cp">%&gt;</span>
+</code></pre>
+
+<p>Haciendo uso de este <em>helper</em>, no tenemos que preocuparnos por nada más, Rails
+se encarga de llevar los índices por nosotros.</p>
+
+<h3>Strong parameters</h3>
+
+<p>Si probamos nuestro formulario ahora, funciona correctamente, los parámetros que
+genera son los correctos, pero aún no guarda las asociaciones con empleados. De
+nuevo, esto tiene que ver con <em>strong parameters</em>. Debemos indicar que acepte
+los campos correspondientes a empleado_ids.</p>
+
+<p>Aquí, hay que observar un pequeño <em>truco</em> para hacer que <code>strong parameters</code>
+acepte la lista de ids que le mandamos desde nuestro formulario. Si agregamos
+simplemente el campo <code>:empleado_ids</code>, <em>strong parameters</em> lo filtrará como un
+campo cuando en realidad necesitamos que lo considere un arreglo. En este caso
+debemos indicarlo como un <em>hash</em>, donde la llave sea <code>:empleado_ids</code> y el valor
+un arreglo vacío.</p>
+<pre class="highlight ruby"><code><span class="c1"># app/controllers/proyectos_controller.rb</span>
+
+<span class="c1"># [...]</span>
+
+<span class="c1"># Never trust parameters from the scary internet, only allow the white list through.</span>
+<span class="k">def</span> <span class="nf">proyecto_params</span>
+  <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:proyecto</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span>
+    <span class="ss">:nombre</span><span class="p">,</span> <span class="ss">:fecha_entrega</span><span class="p">,</span> <span class="ss">tareas_attributes: </span><span class="p">[</span>
+      <span class="ss">:id</span><span class="p">,</span> <span class="ss">:nombre</span><span class="p">,</span> <span class="ss">:prioridad</span><span class="p">,</span> <span class="ss">:_destroy</span><span class="p">,</span> <span class="ss">empleado_ids: </span><span class="p">[]</span>
+    <span class="p">]</span>
+  <span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Y ahora sí, nuestro formulario funciona correctamente asociando proyectos,
+tareas y empleados.</p>
+
+<h1>Conclusiones</h1>
+
+<p>Rails permite trabajar con formularios anidados de manera relativamente fácil.
+La gema <code>nested_form</code> hace que este trabajo sea todavía más sencillo, sin
+embargo, hay que conocer el funcionamiento de otros módulos, como <em>strong
+parameters</em> y <em>accepts<em>nested</em>attributes_for</em> para que todo funcione
+correctamente.</p>
+
+<p>Este tutorial cubrió los aspectos básicos para el trabajo con formularios
+anidados, pero todavía quedan algunos detalles que cubrir. En el siguiente post
+explicaré cómo utilizar la gema cuando tenemos una estructura de modelos más
+compleja. En particular, cuando tenemos modelos dentro de un <em>namespace</em> y
+recursos anidados ( <em>nested resources</em> ) en nuestras rutas.</p>
+
+<h1>Recursos</h1>
+
+<p>Para quien esté interesado en conocer el funcionamiento interno de la gema,
+puede revisar este
+<a href="http://blog.madebydna.com/all/code/2010/10/07/dynamic-nested-froms-with-the-nested-form-gem.html">post</a>.
+Además, estos <em>railscasts</em> son de mucha utilidad: <a href="http://railscasts.com/episodes/196-nested-model-form-part-1">Nested Model Form Part
+1</a> y <a href="http://railscasts.com/episodes/197-nested-model-form-part-2">Nested Model
+Form Part 2</a>.
+También hay una versión actualizada (de paga): <a href="http://railscasts.com/episodes/196-nested-model-form-revised">Nested Model Form
+(revised)</a>.</p>
+
+<p>Un <a href="http://blog.sensible.io/2013/08/17/strong-parameters-by-example.html">post</a>
+muy completo sobre <code>Strong Parameters</code>.</p>
+
+<p>El railscast de <a href="http://railscasts.com/episodes/17-habtm-checkboxes">habtm con
+checkboxes</a> y su <a href="http://railscasts.com/episodes/17-habtm-checkboxes-revised">versión de
+pago</a>.</p>
+
+<p>La documentación de <a href="http://edgeapi.rubyonrails.org/classes/ActionView/Helpers/FormOptionsHelper.html#method-i-collection_check_boxes">collection check
+boxes</a>.</p>
+
+<p>También creé un <a href="https://github.com/apux/formularios_anidados">proyecto de ejemplo en github</a>
+para que sea fácil revisar el código.</p>
+
+  </article>
+
+      </section>
+      <footer>
+  <div class="container">
+    <ul class="large-column">
+      <li><h5 class="heading">Recent Articles</h5></li>
+      <li>
+        <ol>
+            <li>
+              <a href="/2015/05/04/directory-tree.html">Directory tree</a>
+              <span>May  4</span>
+            </li>
+            <li>
+              <a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html">Directory structure conventions in RSpec and Minitest</a>
+              <span>Apr 13</span>
+            </li>
+            <li>
+              <a href="/2015/01/12/joins-vs-includes-espanol.html">Joins vs Includes (Español)</a>
+              <span>Jan 12</span>
+            </li>
+            <li>
+              <a href="/2014/12/08/joins-vs-includes.html">Joins vs Includes</a>
+              <span>Dec  8</span>
+            </li>
+            <li>
+              <a href="/2014/09/01/minitest-v4-y-v5.html">Minitest v4 y  v5</a>
+              <span>Sep  1</span>
+            </li>
+            <li>
+              <a href="/2014/07/14/minitest-v4-and-v5.html">Minitest v4 and v5</a>
+              <span>Jul 14</span>
+            </li>
+            <li>
+              <a href="/2014/03/11/formularios-anidados.html">Formularios anidados</a>
+              <span>Mar 11</span>
+            </li>
+            <li>
+              <a href="/2014/02/10/como-solucionar-las-consultas-n-1-en-rails.html">Cómo solucionar consultas N+1 en Rails</a>
+              <span>Feb 10</span>
+            </li>
+            <li>
+              <a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html">How to fix N+1 queries in Rails</a>
+              <span>Feb  3</span>
+            </li>
+            <li>
+              <a href="/2014/01/13/super-in-ruby.html">Super in Ruby</a>
+              <span>Jan 13</span>
+            </li>
+        </ol>
+      </li>
+    </ul>
+
+    <ul class="small-column">
+      <li><h5 class="heading">Tags</h5></li>
+      <li>
+        <ol>
+            <li><a href="/tags/rails.html">Rails (8)</a></li>
+            <li><a href="/tags/activerecord.html">ActiveRecord (7)</a></li>
+            <li><a href="/tags/nested_attributes.html">nested_attributes (1)</a></li>
+            <li><a href="/tags/formularios.html">formularios (1)</a></li>
+            <li><a href="/tags/ruby.html">Ruby (5)</a></li>
+            <li><a href="/tags/struct.html">Struct (1)</a></li>
+            <li><a href="/tags/openstruct.html">OpenStruct (1)</a></li>
+            <li><a href="/tags/asociaciones.html">Asociaciones (1)</a></li>
+            <li><a href="/tags/minitest.html">Minitest (3)</a></li>
+            <li><a href="/tags/rspec.html">RSpec (2)</a></li>
+            <li><a href="/tags/tree.html">tree (1)</a></li>
+        </ol>
+      </li>
+      <ul>
+  </div>
+</footer>
+
+    </div>
+  </body>
+</html>

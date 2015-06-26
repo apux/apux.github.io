@@ -1,0 +1,816 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Blog Name</title>
+  <subtitle>Blog subtitle</subtitle>
+  <id>http://blog.url.com/</id>
+  <link href="http://blog.url.com/"/>
+  <link href="http://blog.url.com/feed.xml" rel="self"/>
+  <updated>2015-05-03T19:00:00-05:00</updated>
+  <author>
+    <name>Blog Author</name>
+  </author>
+  <entry>
+    <title>Directory tree</title>
+    <link rel="alternate" href="http://blog.url.com/2015/05/04/directory-tree.html"/>
+    <id>http://blog.url.com/2015/05/04/directory-tree.html</id>
+    <published>2015-05-03T19:00:00-05:00</published>
+    <updated>2015-06-26T14:58:03-05:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;For &lt;a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html"&gt;my previous post&lt;/a&gt;, I have to show my projects&amp;rsquo; directory tree. Originally, I had copied-pasted it from my vim. However, there is a command for that task: &lt;code&gt;tree&lt;/code&gt;. I didn&amp;rsquo;t have it installed so I had to do it. I&amp;rsquo;m using &lt;code&gt;pacman&lt;/code&gt; but you can use &lt;code&gt;yum&lt;/code&gt;, &lt;code&gt;apt-get&lt;/code&gt; or the equivalent one for your distro.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;sudo pacman -S tree
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is possible to run &lt;code&gt;tree&lt;/code&gt; just by executing it.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree
+.
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+
+2 directories, 2 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;this will recursively show the current directory structure, including files. If you want to show directories only, then use &lt;code&gt;-d&lt;/code&gt; option.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree -d
+.
+├── lib
+└── test
+
+2 directories
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is possible to show the structure of a specific directory:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree /etc/X11
+
+/etc/X11
+├── xinit
+│   ├── xinitrc
+│   ├── xinitrc.d
+│   │   └── 30-dbus
+│   └── xserverrc
+└── xorg.conf.d
+    └── 10-keyboard.conf
+
+3 directories, 4 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we want to see hidden files:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree -a
+.
+├── .git
+│   ├── branches
+│   ├── COMMIT_EDITMSG
+│   ├── config
+│   ├── description
+│   ├── HEAD
+│   ├── hooks
+│   │   ├── applypatch-msg.sample
+│   │   ├── commit-msg.sample
+│   │   ├── post-update.sample
+│   │   ├── pre-applypatch.sample
+│   │   ├── pre-commit.sample
+│   │   ├── prepare-commit-msg.sample
+│   │   ├── pre-push.sample
+│   │   ├── pre-rebase.sample
+│   │   └── update.sample
+│   ├── index
+│   ├── info
+│   │   └── exclude
+│   ├── logs
+│   │   ├── HEAD
+│   │   └── refs
+│   │       ├── heads
+│   │       │   ├── master
+│   │       │   └── nested
+│   │       └── remotes
+│   │           └── origin
+│   │               ├── master
+│   │               └── nested
+│   ├── objects
+│   │   ├── 25
+│   │   │   └── 07828dee3799f528010c9b30a23fbe5f183f54
+│   │   ├── 66
+│   │   │   └── e163dc71cbbadc74435427b77ba5668b5326e6
+│   │   ├── 69
+│   │   │   └── 907733efe7e40b756fd5a6338fc746235d9912
+│   │   ├── 7d
+│   │   │   └── 3e2d67baa753b84ab89b443c81b2d518911ad5
+│   │   ├── 9f
+│   │   │   └── b847453d0407123ffff4c120fba4b65777c0bb
+│   │   ├── b7
+│   │   │   └── 10d9b96d88636105f08988fdf2ce9db09aa09b
+│   │   ├── c8
+│   │   │   └── 5b809b75fdce3cc4575853d6d19651de0273cd
+│   │   ├── ca
+│   │   │   └── 1320c9f7d74bc85b8764cf7e31dc916e6fa41b
+│   │   ├── da
+│   │   │   └── 148f531bc6252d23d325dd6c972fb67b8dae55
+│   │   ├── ee
+│   │   │   └── f295927a89e8217970deb8a2040a8d2a9af574
+│   │   ├── f8
+│   │   │   └── 7d0c12f09ba71821e8b4478ff2bc12ad5db570
+│   │   ├── fc
+│   │   │   └── a429691bead1ee677ae549a7dbefa30a5f2841
+│   │   ├── info
+│   │   └── pack
+│   └── refs
+│       ├── heads
+│       │   ├── master
+│       │   └── nested
+│       ├── remotes
+│       │   └── origin
+│       │       ├── master
+│       │       └── nested
+│       └── tags
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+
+31 directories, 38 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Wow! those were many files for one basic project. The &lt;code&gt;.git&lt;/code&gt; hidden directory has a lot of nested files and directories. We can specify how deep &lt;code&gt;tree&lt;/code&gt; should display with &lt;code&gt;-L number&lt;/code&gt;, where &lt;code&gt;number&lt;/code&gt; is the level of nested directories/files to show (in our case, 2).&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree -a -L 2
+.
+├── .git
+│   ├── branches
+│   ├── COMMIT_EDITMSG
+│   ├── config
+│   ├── description
+│   ├── HEAD
+│   ├── hooks
+│   ├── index
+│   ├── info
+│   ├── logs
+│   ├── objects
+│   └── refs
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+
+9 directories, 7 files
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is possible to have a colored output with the &lt;code&gt;-C&lt;/code&gt; option. This shows directories in blue, executable files in green, etc.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;tree&lt;/code&gt; has a lot of options. I showed just a few of them, but you can see all these options by &lt;code&gt;man&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;man tree
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;or&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;tree --help
+&lt;/code&gt;&lt;/pre&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Directory structure conventions in RSpec and Minitest</title>
+    <link rel="alternate" href="http://blog.url.com/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html"/>
+    <id>http://blog.url.com/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html</id>
+    <published>2015-04-12T19:00:00-05:00</published>
+    <updated>2015-06-26T14:58:03-05:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;When we create a new project in Ruby, the basic structure is putting the code in a directory named &lt;code&gt;lib&lt;/code&gt;. We can also add a directory named &lt;code&gt;test&lt;/code&gt; or &lt;code&gt;spec&lt;/code&gt; for our testing files. It is not mandatory, but it is a convention that we should follow, not only because our directory structure will be more intuitive, but also because the testing frameworks sometimes assume it.
+If we want to use RSpec, the directory name should be &lt;code&gt;spec&lt;/code&gt;. If we want to use Minitest, we are allowed to name it the way we want, but it is common to named it &lt;code&gt;test&lt;/code&gt; or &lt;code&gt;spec&lt;/code&gt; as well.&lt;/p&gt;
+
+&lt;h2&gt;RSpec&lt;/h2&gt;
+
+&lt;p&gt;Let&amp;rsquo;s try a basic example with RSpec:&lt;/p&gt;
+
+&lt;p&gt;Directory structure:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── spec
+    └── fizz_buzz_spec.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;#spec/fizz_buzz_spec.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'fizz_buzz'&lt;/span&gt;
+
+&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s1"&gt;'returns "1" when receives 1'&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;expect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="n"&gt;eq&lt;/span&gt; &lt;span class="s1"&gt;'1'&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;#lib/fizz_buzz.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzz&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="s1"&gt;'1'&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is just the first test for a fizz buzz project.&lt;/p&gt;
+
+&lt;p&gt;Now, we can just run &lt;code&gt;rspec&lt;/code&gt;:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_rspec]$ rspec
+.
+
+Finished in 0.00151 seconds (files took 0.1615 seconds to load)
+1 example, 0 failures
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I&amp;rsquo;m starting with a passing test because the result is less verbose, but we know that we should start with a failing test, right?, right? :)&lt;/p&gt;
+
+&lt;p&gt;As we can see, we didn&amp;rsquo;t need any extra configuration. In our &lt;code&gt;fizz_buzz_spec&lt;/code&gt; file, we required the &lt;code&gt;fizz_buzz&lt;/code&gt; file and nothing more. Actually, we didn&amp;rsquo;t need to require the &lt;code&gt;rspec&lt;/code&gt; library and we didn&amp;rsquo;t specify where our test files were. We just run the &lt;code&gt;rspec&lt;/code&gt; command from the command line in our project directory and RSpec did the rest.&lt;/p&gt;
+
+&lt;p&gt;What would have happened if our spec directory was named differently? Let&amp;rsquo;s say&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── my_testing_directory
+    └── fizz_buzz_spec.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Well, in that case, if we run the &lt;code&gt;rspec&lt;/code&gt; command it won&amp;rsquo;t find any test file to execute.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_rspec]$ rspec
+No examples found.
+
+
+Finished in 0.00031 seconds (files took 0.07711 seconds to load)
+0 examples, 0 failures
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We must run the command indicating the directory.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_rspec]$ rspec my_testing_directory
+.
+
+Finished in 0.00151 seconds (files took 0.1615 seconds to load)
+1 example, 0 failures
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Also, it is important to follow the spec file name convention. RSpec expects all the spec file names to end with &lt;code&gt;_spec&lt;/code&gt;. In our case, &lt;code&gt;fizz_buzz_spec.rb&lt;/code&gt;. If we rename it, RSpec won&amp;rsquo;t execute it. Let&amp;rsquo;s see.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── spec
+    └── fizz_buzz_testing_file.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s try to execute:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_rspec]$ rspec
+No examples found.
+
+
+Finished in 0.00031 seconds (files took 0.07711 seconds to load)
+0 examples, 0 failures
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Again, RSpec didn&amp;rsquo;t load our file because it does not follow the name convention. If we name it back to &lt;code&gt;fizz_buzz_spec.rb&lt;/code&gt;, it will work.&lt;/p&gt;
+
+&lt;p&gt;If we see the testing file, we can see we didn&amp;rsquo;t need any special configuration to load the &lt;code&gt;fizz_buzz.rb&lt;/code&gt; besides requiring it. RSpec assumes that our code is in a &lt;code&gt;lib&lt;/code&gt; directory and that is why it can load our file correctly. Let&amp;rsquo;s try to rename the &lt;code&gt;lib&lt;/code&gt; directory and see what happen.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_rspec
+├── main
+│   └── fizz_buzz.rb
+└── spec
+    └── fizz_buzz_spec.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we try to run rspec.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_rspec]$ rspec
+[...]core_ext/kernel_require.rb:54:in `require': cannot load such file -- fizz_buzz (LoadError)
+...
+[...]spec/fizz_buzz_spec.rb:1:in `&amp;lt;top (required)&amp;gt;'
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is failing because of the &lt;code&gt;require&lt;/code&gt; (the first line of the spec file). It doesn&amp;rsquo;t find a &lt;code&gt;fizz_buzz.rb&lt;/code&gt; file, which is assumed to be in the &lt;code&gt;lib&lt;/code&gt; directory that we just renamed. So, we rename it back to &lt;code&gt;lib&lt;/code&gt; and everything works again.&lt;/p&gt;
+
+&lt;p&gt;So, as we can see, it is better to stick to the conventions when we use RSpec.&lt;/p&gt;
+
+&lt;h3&gt;&lt;code&gt;spec_helper&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;It is common to use a &lt;code&gt;spec_helper&lt;/code&gt; file. When our project grows, we need to include more testing libraries, or add more tasks to do before or after testing. For example, we would like to include &lt;code&gt;shoulda&lt;/code&gt;, or to clean the database. This tasks affects many testing files, so, it is better to have it in its own file and include it in the other files. Our example does not need anything else, but I just want to show how it would be if it needed it.&lt;/p&gt;
+
+&lt;p&gt;First, we need to create a &lt;code&gt;spec_helper.rb&lt;/code&gt; file in our &lt;code&gt;spec&lt;/code&gt; directory.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_rspec
+├── lib
+│   └── fizz_buzz.rb
+└── spec
+    ├── fizz_buzz_spec.rb
+    └── spec_helper.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, we need to change the spec file:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;#spec/fizz_buzz_spec.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'spec_helper'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'fizz_buzz'&lt;/span&gt;
+
+&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s1"&gt;'returns "1" when receives 1'&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;expect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="n"&gt;eq&lt;/span&gt; &lt;span class="s1"&gt;'1'&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we run it now, it executes correctly. It doesn&amp;rsquo;t matter where our test file is (for example, it could be under &lt;code&gt;spec/models/inbox/fizz_buzz_spec.rb&lt;/code&gt;) it will be able to require the &lt;code&gt;spec_helper&lt;/code&gt; with &lt;code&gt;require &amp;#39;spec_helper&amp;#39;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;As I said before, we don&amp;rsquo;t need to add anything to our &lt;code&gt;spec_helper&lt;/code&gt; file, but I&amp;rsquo;ll show how a &lt;code&gt;spec_helper&lt;/code&gt; file in Rails looks, just as an example:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;spec/spec_helper.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;ENV&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s2"&gt;"RAILS_ENV"&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="s1"&gt;'test'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="no"&gt;File&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;expand_path&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"../../config/environment"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="kp"&gt;__FILE__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'rspec/rails'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'shoulda-matchers'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'rspec/autorun'&lt;/span&gt;
+
+&lt;span class="no"&gt;RSpec&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;configure&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt; &lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;
+  &lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;use_transactional_fixtures&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+  &lt;span class="n"&gt;config&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;order&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;"random"&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It loads all the libraries it needs to work with, and configure RSpec to use transactional fixtures and execute the tests in random order.&lt;/p&gt;
+
+&lt;p&gt;Note that this time, &lt;code&gt;spec_helper&lt;/code&gt; is just another file, it can be named differently and it will still work as longs as it is required with the correct name.&lt;/p&gt;
+
+&lt;h2&gt;Minitest&lt;/h2&gt;
+
+&lt;p&gt;Minitest allows us to name our directories the way we want, but we need to have it in mind because it is important when running our tests.&lt;/p&gt;
+
+&lt;p&gt;Because I like to follow the conventions, I created the project with a structure very similar to the RSpec&amp;rsquo;s one.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_minitest
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;#test/fizz_buzz_test.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'fizz_buzz'&lt;/span&gt;
+
+&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s1"&gt;'returns "1" when receives 1'&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;assert&lt;/span&gt; &lt;span class="s1"&gt;'1'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;#lib/fizz_buzz.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzz&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="s1"&gt;'1'&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The first thing I&amp;rsquo;d like to point out is that in Minitest it is mandatory to require the Minitest library, specifically, the &lt;code&gt;minitest/autorun&lt;/code&gt;, which provides everything we need to execute the test (e.g. the assertions methods). Note that I&amp;rsquo;m using the &lt;em&gt;spec&lt;/em&gt; syntax here, but it is also possible to use the classic syntax for Minitest.&lt;/p&gt;
+
+&lt;p&gt;Now, we don&amp;rsquo;t have a &lt;code&gt;minitest&lt;/code&gt; command to run, as we had with RSpec. Minitest is a very basic (but very powerful) testing framework. One of its strengths is that it is not a DSL (like RSpec), but simple Ruby. So, in order to execute our test, we need to run just ruby.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby test/fizz_buzz_test.rb
+[...]core_ext/kernel_require.rb:54:in `require': cannot load such file -- fizz_buzz (LoadError)
+...
+        from test/fizz_buzz_test.rb:1:in `&amp;lt;main&amp;gt;'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Humm, it actually executed something, but it didn&amp;rsquo;t go well. What happened here is that it was not possible to load the &lt;code&gt;fizz_buzz&lt;/code&gt; file. Luckily, it is something easy to solve. Ruby includes a &lt;code&gt;require_relative&lt;/code&gt; to require a file specifying a relative path. This path must be built based on the current file path. In our case, our test file is inside a &lt;code&gt;test&lt;/code&gt; directory, so the path has to move backward one directory and then add the path to the required file.&lt;/p&gt;
+
+&lt;p&gt;Our testing file now looks this way.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;#test/fizz_buzz_test.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+&lt;span class="nb"&gt;require_relative&lt;/span&gt; &lt;span class="s1"&gt;'../lib/fizz_buzz'&lt;/span&gt;
+
+&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s1"&gt;'returns "1" when receives 1'&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;assert&lt;/span&gt; &lt;span class="s1"&gt;'1'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We can run our tests again.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby test/fizz_buzz_test.rb
+Run options: --seed 21470
+
+# Running:
+
+.
+
+Finished in 0.000718s, 1393.3787 runs/s, 1393.3787 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it works. Note that you must run the command from the project base directory, not from &lt;code&gt;lib&lt;/code&gt; or &lt;code&gt;test&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, there is a little problem with this approach. If we re-arrange the directory structure, either test or lib, we need to change the relative path. For example.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_minitest
+├── lib
+│   └── models
+│       └── fizz_buzz.rb
+└── test
+    └── models
+        └── fizz_buzz_test.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we need to change the relative path to:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require_relative&lt;/span&gt; &lt;span class="s1"&gt;'../../lib/models/fizz_buzz'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In our example we have just one file, but in a real project it would be a big problem.&lt;/p&gt;
+
+&lt;p&gt;Fortunately, we have an alternative. We can execute our test file specifying in the command line where ruby must look for the required files. With our initial structure, we can execute the test this way.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby -I lib test/fizz_buzz_test.rb
+Run options: --seed 2633
+
+# Running:
+
+.
+
+Finished in 0.000820s, 1220.1178 runs/s, 1220.1178 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We used the &lt;code&gt;-I&lt;/code&gt; flag, indicating that ruby should load the directory &lt;code&gt;lib&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Note that with minitest, it doesn&amp;rsquo;t matter how the files and directories are named, it will just work. Example:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_minitest
+├── my_own_directory
+│   └── fizz_buzz.rb
+└── my_testing_directory
+    └── fizz_buzz_test.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Let&amp;rsquo;s execute the test.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby -I my_own_directory test/fizz_buzz_testing_file.rb
+Run options: --seed 31542
+
+# Running:
+
+.
+
+Finished in 0.000719s, 1389.9584 runs/s, 1389.9584 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Everything is working. This is because we are not running the entire test suite, as we do with RSpec. In this case, we are only running one file and we specify what directory should be loaded.&lt;/p&gt;
+
+&lt;h3&gt;&lt;code&gt;test_helper&lt;/code&gt;&lt;/h3&gt;
+
+&lt;p&gt;In the same way we use a &lt;code&gt;spec_helper&lt;/code&gt; file in RSpec, we can use a &lt;code&gt;test_helper&lt;/code&gt; in minitest. Note that the file name does not matter, but &lt;code&gt;test_helper&lt;/code&gt; is a widely used name when working with Minitest.&lt;/p&gt;
+
+&lt;p&gt;We can create a &lt;code&gt;test_helper.rb&lt;/code&gt; file in our &lt;code&gt;test&lt;/code&gt; directory.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_minitest
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    ├── fizz_buzz_test.rb
+    └── test_helper.rb
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The content for our &lt;code&gt;test_helper&lt;/code&gt; file would be a little better than the &lt;code&gt;spec_helper&lt;/code&gt;, because now we can add some code at least.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/pride'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We extracted the require of Minitest&amp;rsquo;s autorun to the &lt;code&gt;test_helper&lt;/code&gt; file, and also required &lt;code&gt;pride&lt;/code&gt;, a small library from Minitest that colorize the output.&lt;/p&gt;
+
+&lt;p&gt;Now we need to change the require of our testing file.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;#spec/fizz_buzz_test.rb&lt;/code&gt;&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'test_helper'&lt;/span&gt;
+&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'fizz_buzz'&lt;/span&gt;
+
+&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s1"&gt;'returns "1" when receives 1'&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;assert&lt;/span&gt; &lt;span class="s1"&gt;'1'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And try to run it.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby -I lib test/fizz_buzz_test.rb
+
+[...]core_ext/kernel_require.rb:54:in `require': cannot load such file -- test_helper (LoadError)
+...
+        from spec/fizz_buzz_test.rb:1:in `&amp;lt;main&amp;gt;'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ups, something failed.&lt;/p&gt;
+
+&lt;p&gt;The reason is that the required file couldn&amp;rsquo;t be loaded. We indicated ruby that it should load the &lt;code&gt;lib&lt;/code&gt; directory, but the &lt;code&gt;test_helper&lt;/code&gt; is not there. It is in the &lt;code&gt;test&lt;/code&gt; directory. Well, for that case, we can use &lt;code&gt;require_relative&lt;/code&gt;, but we could have the same potential problems: if we move the files into other directories, all the paths passed to &lt;code&gt;require_relative&lt;/code&gt; should be updated as well.&lt;/p&gt;
+
+&lt;p&gt;Again, the best option is to specify that another directory should be loaded by ruby when executing the test file. We can do that by adding the &lt;code&gt;test&lt;/code&gt; directory to the list (separated by a colon &lt;code&gt;:&lt;/code&gt;)&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby -I lib:test test/fizz_buzz_test.rb
+Run options: --seed 64180
+
+# Running:
+
+.
+
+Fabulous run in 0.000797s, 1254.2865 runs/s, 1254.2865 assertions/s.
+
+1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And&amp;hellip; every thing is working again.&lt;/p&gt;
+
+&lt;p&gt;As we can see, Minitest does not assume a specific directory structure, because we can specify its dependencies as command line options. However, I recommend to use the one we saw here because is a very widespread one. Any developer could figure out where to find which files, and it is easy to grow if we want to use rake (for example) to run our test in batches.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Joins vs Includes (Español)</title>
+    <link rel="alternate" href="http://blog.url.com/2015/01/12/joins-vs-includes-espanol.html"/>
+    <id>http://blog.url.com/2015/01/12/joins-vs-includes-espanol.html</id>
+    <published>2015-01-11T18:00:00-06:00</published>
+    <updated>2015-06-26T14:58:03-05:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;A veces, &lt;code&gt;includes&lt;/code&gt; y &lt;code&gt;joins&lt;/code&gt; pueden resultar confusos porque hay escenarios donde parecen ser intercambiables, pero hay razones específicas para usar uno o el otro.&lt;/p&gt;
+
+&lt;h2&gt;&lt;code&gt;joins&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;joins&lt;/code&gt; nos permite especificar una relación a incluirse en la consulta. La consulta resultante incluirá una cláusula &lt;code&gt;JOIN&lt;/code&gt; (SQL).&lt;/p&gt;
+
+&lt;p&gt;Digamos que tenemos estos dos modelos, Empleado (&lt;code&gt;Employee&lt;/code&gt;) que tiene una Computadora (&lt;code&gt;Computer&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;#app/models/employee.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Employee&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+  &lt;span class="n"&gt;has_one&lt;/span&gt; &lt;span class="ss"&gt;:computer&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="c1"&gt;#app/models/computer.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Computer&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+  &lt;span class="n"&gt;belongs_to&lt;/span&gt; &lt;span class="ss"&gt;:employee&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Si queremos conocer todos los empleados cuyo nombre sea Fernando y tengan una computadora Dell, podemos usar &lt;code&gt;joins&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computers: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Esta consulta funciona bien y regresa todos los empleados que cunmplan con las condiciones.&lt;/p&gt;
+
+&lt;p&gt;El SQL será algo como esto:&lt;/p&gt;
+&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;
+ &lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;
+ &lt;span class="k"&gt;INNER&lt;/span&gt; &lt;span class="k"&gt;JOIN&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt; &lt;span class="k"&gt;ON&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt;
+ &lt;span class="k"&gt;WHERE&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Fernando'&lt;/span&gt; &lt;span class="k"&gt;AND&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Dell'&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;&lt;code&gt;includes&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;Como explicamos en &lt;a href="/2014/02/10/como-solucionar-las-consultas-n-1-en-rails.html"&gt;un post previo&lt;/a&gt;, si queremos cargar todos los empleados y todas sus computadoras en una única consulta, podemos usar &lt;code&gt;includes&lt;/code&gt;, &lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;De esta manera, Rails golpea la base de datos sólo una vez, y carga todos los datos de empleados y computadoras. Puede que la confusión empiece aquí, porque al usar &lt;code&gt;includes&lt;/code&gt; podemos también realizar algunas condicionales en la cláusula &lt;code&gt;where&lt;/code&gt;. Por ejemplo:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computers: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Como podemos ver, es posible incluir condicionales que afecten ambas asociaciones, tal como lo hicimos con &lt;code&gt;joins&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Sin embargo, el SQL resultante es diferente. Veamos:&lt;/p&gt;
+&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"created_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"updated_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"model"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"created_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"updated_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r5&lt;/span&gt;
+ &lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;
+ &lt;span class="k"&gt;LEFT&lt;/span&gt; &lt;span class="k"&gt;OUTER&lt;/span&gt; &lt;span class="k"&gt;JOIN&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt; &lt;span class="k"&gt;ON&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt;
+ &lt;span class="k"&gt;WHERE&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Fernando'&lt;/span&gt; &lt;span class="k"&gt;AND&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Dell'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Como vemos, &lt;code&gt;includes&lt;/code&gt; agrega todos los campos de la computadora, como se espera, mientras que &lt;code&gt;joins&lt;/code&gt; no lo hace. Y esa pequeña diferencia es la que debemos tenee en cuenta.&lt;/p&gt;
+
+&lt;p&gt;Cuando sólo queremos filtrar los resultado de una consulta basados en un campo que pertenece a una relación secundaria, pero no vamos a usar datos de esa relación más adelante, debemos usar &lt;code&gt;joins&lt;/code&gt;. De otra forma, cargaremos muchos datos que no vamos a usar.&lt;/p&gt;
+
+&lt;p&gt;Ejemplo:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;employees&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computer: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;employees&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;En la otra mano, si necesitamos usar datos de la relación secundaria, entonces &lt;code&gt;includes&lt;/code&gt; es obligatorio, de otra manera, tendremos poblemas de consultas N+1.&lt;/p&gt;
+
+&lt;p&gt;Ejemplo:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;employees&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computer: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;employees&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;full_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; has a Dell &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;computer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;model&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;No es tan confuso después de todo, ¿cierto?&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Joins vs Includes</title>
+    <link rel="alternate" href="http://blog.url.com/2014/12/08/joins-vs-includes.html"/>
+    <id>http://blog.url.com/2014/12/08/joins-vs-includes.html</id>
+    <published>2014-12-07T18:00:00-06:00</published>
+    <updated>2015-06-26T14:58:03-05:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;Sometimes, &lt;code&gt;joins&lt;/code&gt; and &lt;code&gt;includes&lt;/code&gt; can be confusing because there are scenarios where they seem to be interchangeable, but there are specific reasons to use one or the other.&lt;/p&gt;
+
+&lt;h2&gt;&lt;code&gt;joins&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;joins&lt;/code&gt; allow us to specify a relation to be included in the query. The resulting query will include a &lt;code&gt;JOIN&lt;/code&gt; clause (SQL).&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s say we have these two models: &lt;code&gt;Employee&lt;/code&gt; that has one &lt;code&gt;Computer&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;#app/models/employee.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Employee&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+  &lt;span class="n"&gt;has_one&lt;/span&gt; &lt;span class="ss"&gt;:computer&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="c1"&gt;#app/models/computer.rb&lt;/span&gt;
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Computer&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
+  &lt;span class="n"&gt;belongs_to&lt;/span&gt; &lt;span class="ss"&gt;:employee&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we want to know all the employees whose name is &amp;lsquo;Fernando&amp;rsquo; and has a Dell computer, we can use &lt;code&gt;joins&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computers: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This query works well and returns all the employees who fulfill the conditions.&lt;/p&gt;
+
+&lt;p&gt;The SQL will be something like this:&lt;/p&gt;
+&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;
+ &lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;
+ &lt;span class="k"&gt;INNER&lt;/span&gt; &lt;span class="k"&gt;JOIN&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt; &lt;span class="k"&gt;ON&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt;
+ &lt;span class="k"&gt;WHERE&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Fernando'&lt;/span&gt; &lt;span class="k"&gt;AND&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Dell'&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2&gt;&lt;code&gt;includes&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;As we explained in &lt;a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html"&gt;a previous post&lt;/a&gt;, if we want to load all the employees and all their computers in a single query, we can use &lt;code&gt;includes&lt;/code&gt;, &lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This way, Rails hits the database just once, and load all the data from employees and computers. The confusion might start here, because using &lt;code&gt;includes&lt;/code&gt; we can also perform some conditionals in the where clause. For, example:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computers: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As we can see, it is possible to include conditionals that affect both relations, just like we did with &lt;code&gt;joins&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;However, the resulting SQL is different. Let&amp;rsquo;s see:&lt;/p&gt;
+&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"created_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"updated_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"model"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"created_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+ &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"updated_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r5&lt;/span&gt;
+ &lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;
+ &lt;span class="k"&gt;LEFT&lt;/span&gt; &lt;span class="k"&gt;OUTER&lt;/span&gt; &lt;span class="k"&gt;JOIN&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt; &lt;span class="k"&gt;ON&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt;
+ &lt;span class="k"&gt;WHERE&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Fernando'&lt;/span&gt; &lt;span class="k"&gt;AND&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Dell'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As we can see, &lt;code&gt;includes&lt;/code&gt; adds all the fields from computer, as expected, while &lt;code&gt;joins&lt;/code&gt; doesn&amp;rsquo;t. And this little difference is what we must take into account.&lt;/p&gt;
+
+&lt;p&gt;When we just want to filter the result of a query based on a field that belongs to a secondary relation, but we aren&amp;rsquo;t going to use data of this relation later, we must use &lt;code&gt;joins&lt;/code&gt;. Otherwise, we will load a lot of data that we are not going to use.&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;employees&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computer: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;employees&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On the other hand, if we need to use data from the secondary relation, then &lt;code&gt;includes&lt;/code&gt; is mandatory, otherwise, we will have N+1 query issues.&lt;/p&gt;
+
+&lt;p&gt;Example:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;employees&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
+  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
+  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computer: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;employees&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;full_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; has a Dell &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;computer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;model&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It is not so confusing after all, right?&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Minitest v4 y  v5</title>
+    <link rel="alternate" href="http://blog.url.com/2014/09/01/minitest-v4-y-v5.html"/>
+    <id>http://blog.url.com/2014/09/01/minitest-v4-y-v5.html</id>
+    <published>2014-08-31T19:00:00-05:00</published>
+    <updated>2015-06-26T14:58:03-05:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;La versión actual de Minitset es 5, ésta es la que obtenemos al ejecutar &lt;code&gt;gem install minitest&lt;/code&gt;. Sin embargo, es muy probable que nuestra versión sea la 4, porque es la versión que se incluye con Ruby. Es decir, si no hemos instalado Minitest de manera explícita, entonces estamos usando la versión empaquetada con el intérprete.&lt;/p&gt;
+
+&lt;p&gt;Para nosotros, la diferencia es la clase de la que heredamos.&lt;/p&gt;
+
+&lt;p&gt;En la versión 4, heredamos de &lt;code&gt;MiniTest::Unit::TestCase&lt;/code&gt;. Ejemplo:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;MiniTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Unit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;TestCase&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
+    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Nota que el módulo Minitest es &lt;code&gt;MiniTest&lt;/code&gt; con T mayúsculas.&lt;/p&gt;
+
+&lt;p&gt;En la versión 5, heredamos de &lt;code&gt;Minitest::Test&lt;/code&gt;. Ejemplo:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;Minitest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Test&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
+    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Ahora, el módulo es &lt;code&gt;Minitest&lt;/code&gt; y la herarquía cambió.&lt;/p&gt;
+
+&lt;p&gt;Si preferimos la sintaxis &lt;em&gt;spec&lt;/em&gt;, no tenemos que cambiar nada.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+
+&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s2"&gt;"is '1' when receives 1"&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Este código funciona bien en ambas versiones.&lt;/p&gt;
+</content>
+  </entry>
+  <entry>
+    <title>Minitest v4 and v5</title>
+    <link rel="alternate" href="http://blog.url.com/2014/07/14/minitest-v4-and-v5.html"/>
+    <id>http://blog.url.com/2014/07/14/minitest-v4-and-v5.html</id>
+    <published>2014-07-13T19:00:00-05:00</published>
+    <updated>2015-06-26T14:58:03-05:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;The current version of Minitest is 5, this is what we get if you do &lt;code&gt;gem install minitest&lt;/code&gt;. However, chances are that our version is 4, because it is the version included in Ruby. I mean, if we didn&amp;rsquo;t install Minitest explicitly, then we are using the one packet with the interpreter.&lt;/p&gt;
+
+&lt;p&gt;For us, the main difference is the class we need to inherit.&lt;/p&gt;
+
+&lt;p&gt;In version 4, we inherit from &lt;code&gt;MiniTest::Unit::TestCase&lt;/code&gt;. Example:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;MiniTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Unit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;TestCase&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
+    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Note that the Minitest module is &lt;code&gt;MiniTest&lt;/code&gt; with a capital T.&lt;/p&gt;
+
+&lt;p&gt;In version 5, we inherit from &lt;code&gt;Minitest::Test&lt;/code&gt;. Example:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;Minitest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Test&lt;/span&gt;
+  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
+    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, the module is &lt;code&gt;Minitest&lt;/code&gt; and the hierarchy changed.&lt;/p&gt;
+
+&lt;p&gt;If we prefer the spec syntax, we don&amp;rsquo;t have to change anything.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
+
+&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s2"&gt;"is '1' when receives 1"&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This code works well in both versions.&lt;/p&gt;
+</content>
+  </entry>
+</feed>

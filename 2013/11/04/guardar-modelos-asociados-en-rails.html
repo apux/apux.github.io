@@ -1,0 +1,330 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>El Blog de ApuX - Guardar modelos asociados en Rails</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Nunito:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Dancing Script:400,700" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="main" role="main">
+      <nav>
+  <ul>
+    <li>
+<a class="blog-title" href="/">        El Blog de Ap<span>uX</span>
+</a>      <span class="caption">My Learning about Software Development</span>
+    </li>
+  </ul>
+</nav>
+
+      <section id="content">
+          <article>
+    <h1 class="heading">
+      Guardar modelos asociados en Rails
+      <time>Nov  4 2013</time>
+    </h1>
+    <p>Como desarrolladores Rails, solemos olvidarnos de la capa de persistencia gracias a que ActiveRecord se encarga de <em>mapear</em> objetos Ruby a tablas de la base de datos y viceversa (a esto se le conoce como <em>Mapeo objeto_relacional</em>). Nosotros trabajamos con objetos Ruby, con la lógica de negocios que contienen, y delegamos por completo al <em>framework</em> la forma en la que esos objetos se guardan (salvo en ocasiones especiales, que tenemos que ensuciarnos las manos con SQL). Sin embargo, como toda herramienta, es necesario conocer cómo trabaja para poder sacarle el mayor provecho, sobre todo en ocasiones especiales, donde el comportamiento no es siempre el esperado. La intensión del post es conocer cómo se comportan los modelos asociados cuando se realizan asignaciones, ya que en ciertas ocasiones la asociación se guarda automáticamente y en otras no. También veremos cómo &lsquo;forzar&rsquo; el comportamiento que deseamos.</p>
+
+<p>Aunque el tema principal del post es verificar el comportamiento de las asociaciones para casos específicos, en los ejemplos también se cubrirán aspectos más básicos para que una persona con escaso conocimiento de asociaciones en Rails pueda seguirlos sin problema. De cualquier forma, si se requiere documentación básica más detallada, la <a href="http://guides.rubyonrails.org/association_basics.html">guía de asociaciones en Rails</a> es un buen lugar para comenzar.</p>
+
+<h1>Las asociaciones</h1>
+
+<p>Imaginemos que tenemos los siguientes modelos asociados:</p>
+<pre class="highlight ruby"><code><span class="c1">#app/models/empleado.rb</span>
+<span class="k">class</span> <span class="nc">Empleado</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_one</span> <span class="ss">:puesto</span>
+  <span class="n">has_many</span> <span class="ss">:computadoras</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:proyectos</span>
+<span class="k">end</span>
+
+<span class="c1">#app/models/puesto.rb</span>
+<span class="k">class</span> <span class="nc">Puesto</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:empleado</span>
+<span class="k">end</span>
+
+<span class="c1">#app/models/computadora.rb</span>
+<span class="k">class</span> <span class="nc">Computadora</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:empleado</span>
+<span class="k">end</span>
+
+<span class="c1">#app/models/proyecto.rb</span>
+<span class="k">class</span> <span class="nc">Proyecto</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_and_belongs_to_many</span> <span class="ss">:empleados</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>Como podemos ver, tenemos cuatro modelos con diversas asociaciones: uno a uno, uno a muchos y muchos a muchos. Por comodidad, vamos a pasar por alto las validaciones de estos modelos y centrarnos únicamente en las relaciones.</p>
+
+<h1>Creación de modelos</h1>
+
+<p>Para empezar, veamos cómo crear un <code>Empleado</code>. Esto lo podemos hacer en dos pasos:</p>
+<pre class="highlight ruby"><code><span class="n">empleado</span> <span class="o">=</span> <span class="no">Empleado</span><span class="p">.</span><span class="nf">new</span> <span class="ss">nombre_completo: </span><span class="s1">'Juan Pérez'</span>
+<span class="n">empleado</span><span class="p">.</span><span class="nf">save</span>
+</code></pre>
+
+<p>O bien, en uno solo:</p>
+<pre class="highlight ruby"><code><span class="n">empleado</span> <span class="o">=</span> <span class="no">Empleado</span><span class="p">.</span><span class="nf">create</span> <span class="ss">nombre_completo: </span><span class="s1">'Juan Pérez'</span>
+</code></pre>
+
+<p>En el primer ejemplo, se construye el modelo <code>Empleado</code> y se salva después. En el segundo ejemplo se construye el modelo <code>Empleado</code> y se guarda automáticamente en la base de datos.</p>
+
+<p>También podemos crear por separado un puesto, un proyecto y una computadora.</p>
+<pre class="highlight ruby"><code><span class="n">puesto</span> <span class="o">=</span> <span class="no">Puesto</span><span class="p">.</span><span class="nf">create</span> <span class="ss">nombre: </span><span class="s1">'Programador'</span>
+<span class="n">proyecto</span> <span class="o">=</span> <span class="no">Proyecto</span><span class="p">.</span><span class="nf">create</span> <span class="ss">nombre: </span><span class="s1">'Proyecto Importante'</span>
+<span class="n">computadora</span> <span class="o">=</span> <span class="no">Computadora</span><span class="p">.</span><span class="nf">create</span> <span class="ss">modelo: </span><span class="s1">'laptop 15"'</span>
+</code></pre>
+
+<p>Hasta aquí, hemos creado custro modelos por separado y todo ha funcionado correctamente. Es momento de asociarlos.</p>
+
+<h1>Asociación uno a muchos</h1>
+
+<p>Empezaremos analizando cómo se comporta la relación uno a muchos al momento de realizar una asignación. Rails nos permite asociar nuestros modelos por medio de los ids (<em>foreign_keys</em>), pero una forma más natural es asociar los modelos directamente. Como ya tenemos creados nuestros modelos, basta con asignar uno al otro. Ahora bien, las asignaciones de uno a muchos pueden hacerse de dos maneras: asignar el empleado a la computadora, o bien, agregar la computadora a la lista de computadoras que tiene el empleados. Empecemos por hacer lo primero:</p>
+<pre class="highlight ruby"><code><span class="n">computadora</span><span class="p">.</span><span class="nf">empleado</span> <span class="o">=</span> <span class="n">empleado</span>
+</code></pre>
+
+<p>Una vez hecha la asignación, verificamos que efectivamente estén asociados.</p>
+<pre class="highlight ruby"><code><span class="n">computadora</span><span class="p">.</span><span class="nf">empleado</span>
+<span class="c1"># =&gt; #&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;</span>
+<span class="n">empleado</span><span class="p">.</span><span class="nf">computadoras</span>
+<span class="c1"># =&gt; #&lt;ActiveRecord::Associations::CollectionProxy []&gt;</span>
+</code></pre>
+
+<p>La asignación funcionó correctamente, pero al tratar de acceder a la asociación contraria, nos regresa un arreglo vacío.</p>
+
+<h2>Guardado manual</h2>
+
+<p>La razón por la que la lista de computadoras regresó vacía es sencilla: no hemos salvado nuestra relación, por lo que los cambios todavía no se han reflejado en la base de datos y por tanto, el empleado no se ha enterado que tiene una computadora asignada. Salvemos el modelo y veamos cómo se comporta.</p>
+<pre class="highlight ruby"><code><span class="n">computadora</span><span class="p">.</span><span class="nf">save</span>
+<span class="no">Computadora</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">empleado</span>
+<span class="c1"># =&gt; #&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;</span>
+<span class="no">Empleado</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">computadoras</span>
+<span class="c1"># =&gt; [#&lt;Computadora id: 1, modelo: 'laptop 15"', empleado_id: 1&gt;]</span>
+</code></pre>
+
+<p>Hecho esto, las asociaciones funcionan correctamente. Para comprobarlo, hemos consultado directamente la información de la base de datos en lugar de los objetos que tenemos en memoria, y la asociación se mantiene ya que se ha guardado en la tabla correspondiente. Eso también lo podemos ver en el campo <code>empleado_id</code> de la computadora, que ahora tiene el id del empleado (en este caso, 1).</p>
+
+<h2>Guardado automático</h2>
+
+<p>Veamos ahora cómo se comporta la asignación si la hacemos al revés, es decir, agregando una computadora a la lista de computadoras de un empleado.</p>
+<pre class="highlight ruby"><code><span class="n">computadora_2</span> <span class="o">=</span> <span class="no">Computadora</span><span class="p">.</span><span class="nf">create</span> <span class="ss">modelo: </span><span class="s1">'desktop 24"'</span>
+<span class="n">empleado</span><span class="p">.</span><span class="nf">computadoras</span> <span class="o">&lt;&lt;</span> <span class="n">computadora_2</span>
+<span class="no">Computadora</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">2</span><span class="p">).</span><span class="nf">empleado</span>
+<span class="c1"># =&gt; #&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;</span>
+<span class="no">Empleado</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">computadoras</span>
+<span class="c1"># =&gt; [#&lt;Computadora id: 1, modelo: 'laptop 15"', empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 2, modelo: 'desktop 24"', empleado_id: 1&gt;]</span>
+</code></pre>
+
+<p>Lo primero que hicimos fue crear una nueva computadora y luego agregarla a la lista de computadoras del empleado, después comprobamos el estado de las asociaciones y todo funciona correctamente. Lo interesante es que no necesitamos guardar ninguno de los dos modelos después de la asociación, Rails lo hizo automáticamente por nosotros.</p>
+
+<h2>Asignación de un modelo que no ha sido guardado</h2>
+
+<p>Veamos un tercer caso: en los dos casos anteriores, el modelo computadora ya existía en la base de datos, ahora veremos qué sucede con un modelo que aún no ha sido guardado:</p>
+<pre class="highlight ruby"><code><span class="n">empleado</span><span class="p">.</span><span class="nf">computadoras</span> <span class="o">&lt;&lt;</span> <span class="no">Computadora</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">modelo: </span><span class="s1">'netbook'</span><span class="p">)</span>
+<span class="no">Computadora</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="nf">empleado</span>
+<span class="c1"># =&gt; #&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;</span>
+<span class="no">Empleado</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">computadoras</span>
+<span class="c1"># =&gt; [#&lt;Computadora id: 1, modelo: 'laptop 15"', empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 2, modelo: 'desktop 24"', empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 3, modelo: 'netbook', empleado_id: 1&gt;]</span>
+</code></pre>
+
+<p>La nueva computadora aparece en la lista de computadoras asociadas, con el campo <code>empleado_id: 1</code>, lo que significa que está asociado al empleado que creamos previamente, y con el <code>id: 3</code>, lo que significa que la computadora no sólo fue asignada, sino que al momento de realizar la asignación, Rails la guardó automáticamente.</p>
+
+<p>Este comportamiento puede ser el esperado en muchas de las ocasiones, pero en otras no. A veces preferimos asociar un modelo nuevo a uno existente sin que el nuevo modelo se guarde automáticamente, por ejemplo, cuando hay validaciones que todavía no se satisfacen, o cuando tenemos que hacer un procesamiento posterior sobre el modelo a agregar antes de que éste sea guardado. Si ese es nuestro caso, ¿qué podemos hacer?</p>
+
+<h2><code>create</code>, <code>build</code> y <code>new</code> a través de la clase proxy</h2>
+
+<p>Nuestra relación <code>computadoras</code> dentro de un modelo <code>empleado</code> es una clase proxy que incluye métodos que nos permiten algunas operaciones. Una pequeña aclaración sobre la clase de la asociación: en Rails 3, si ejecutábamos <code>empleado.computadoras.class</code>, obteníamos como resultado <code>Array</code>, pero era en realidad información falsa, porque <code>empleado.computadoras</code> es en realidad una clase <em>proxy</em>. En Rails 4, la información es más adecuada: <code>ActiveRecord::Associations::CollectionProxy::ActiveRecord_Associations_CollectionProxy_Computadora</code>.</p>
+
+<p>Esta clase nos provee de un par de métodos más para asociar dos modelos en una relación uno a muchos: los métodos <code>build</code> y <code>create</code>. El método <code>build</code> construye y asigna el modelo pero no lo guarda (debemos llamar a <code>save</code> manualmente si queremos guardarlo). El método <code>create</code>, en cambio, guarda automáticamente el modelo asociado.</p>
+<pre class="highlight ruby"><code><span class="n">computadora_sin_guardar</span> <span class="o">=</span> <span class="n">empleado</span><span class="p">.</span><span class="nf">computadoras</span><span class="p">.</span><span class="nf">build</span> <span class="ss">modelo: </span><span class="s1">'server'</span>
+<span class="n">computadora_sin_guardar</span><span class="p">.</span><span class="nf">new_record?</span>
+<span class="c1"># =&gt; true</span>
+<span class="n">computadora_sin_guardar</span><span class="p">.</span><span class="nf">empleado_id</span>
+<span class="c1"># =&gt; 1</span>
+<span class="n">empleado</span><span class="p">.</span><span class="nf">computadoras</span>
+<span class="c1"># =&gt; [#&lt;Computadora id: 1, modelo: 'laptop 15"', empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 2, modelo: 'desktop 24', empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 3, modelo: "netbook", empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: nil, modelo: "server", empleado_id: 1&gt;]</span>
+<span class="n">empleado</span><span class="p">.</span><span class="nf">save</span>
+<span class="no">Empleado</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">computadoras</span>
+<span class="c1"># =&gt; [#&lt;Computadora id: 1, modelo: 'laptop 15"', empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 2, modelo: 'desktop 24', empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 3, modelo: "netbook", empleado_id: 1&gt;,</span>
+<span class="c1">#     #&lt;Computadora id: 4, modelo: "server", empleado_id: 1&gt;]</span>
+</code></pre>
+
+<p>Como la asociación no se guarda automáticamente, hay que hacerlo de manera manual llamando al método <code>save</code>. Esto se puede hacer ya sea desde el objecto <code>empleado</code> (<code>empleado.save</code>) o desde el objeto <code>computadora_sin_guardar</code> (<code>computadora_sin_guardar.save</code>). En ambos casos, se guarda también la relación.</p>
+
+<p>Existe también el método <code>new</code>, que es simplemente un alias para el <code>build</code>.</p>
+
+<p>Como regla general, para las asociaciones uno a muchos, podemos decir que si la asignación se hace del modelo con <code>belongs_to</code> al modelo con <code>has_many</code>, la asociación se guarda automáticamente, mientras que si se hace a la inversa, la asociación no será guardada mientras no se guarde alguno de los dos modelos.</p>
+
+<h1>Asociación muchos a muchos</h1>
+
+<p>Las asociaciones muchos a muchos se guardan automáticamente, sin importar la dirección de la asignación. Si el modelo que se asigna no está guardado y el receptor sí, el nuevo modelo se guarda automáticamente. Este comportamiento lo podemos ver en el siguiente código.</p>
+<pre class="highlight ruby"><code><span class="n">empleado</span><span class="p">.</span><span class="nf">proyectos</span> <span class="o">&lt;&lt;</span> <span class="n">proyecto</span>
+<span class="c1"># =&gt; [#&lt;Proyecto id: 1, nombre: "Proyecto Importante"&gt;]</span>
+<span class="n">proyecto</span><span class="p">.</span><span class="nf">empleados</span> <span class="o">&lt;&lt;</span> <span class="no">Empleado</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">nombre_completo: </span><span class="s1">'Guadalupe Martínez'</span><span class="p">)</span>
+<span class="no">Proyecto</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">empleados</span>
+<span class="c1"># =&gt; [#&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;,</span>
+<span class="c1">#     #&lt;Empleado id: 2, nombre_completo: "Guadalupe Martínez"&gt;]</span>
+</code></pre>
+
+<p>De nuevo, si queremos asignar un proyecto a un empleado (o viceversa) sin que la asignación provoque que el modelo se guarde automáticamente, podemos usar los métodos <code>build</code> o <code>new</code> de la clase <em>proxy</em> de la asociación, y salvar el modelo posteriormente. Por ejemplo:</p>
+<pre class="highlight ruby"><code><span class="n">empleado_sin_guardar</span> <span class="o">=</span> <span class="n">proyecto</span><span class="p">.</span><span class="nf">empleados</span><span class="p">.</span><span class="nf">build</span> <span class="ss">nombre_completo: </span><span class="s1">'Carlos López'</span>
+<span class="n">proyecto</span><span class="p">.</span><span class="nf">empleados</span>
+<span class="c1"># =&gt; [#&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;,</span>
+<span class="c1">#     #&lt;Empleado id: 2, nombre_completo: "Guadalupe Martínez"&gt;,</span>
+<span class="c1">#     #&lt;Empleado id: nil, nombre_completo: "Carlos López"&gt;]</span>
+<span class="n">proyecto</span><span class="p">.</span><span class="nf">save</span>
+<span class="no">Proyecto</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">empleados</span>
+<span class="c1"># =&gt; [#&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;,</span>
+<span class="c1">#     #&lt;Empleado id: 2, nombre_completo: "Guadalupe Martínez"&gt;,</span>
+<span class="c1">#     #&lt;Empleado id: 3, nombre_completo: "Carlos López"&gt;]</span>
+</code></pre>
+
+<p>Como la asociación no guarda automáticamente, hay que hacerlo de manera manual llamando al método <code>save</code>, similar a como se hace en las asociaciones uno a muchos. La diferencia es que en este caso se tiene que llamar al método <code>save</code> desde el objeto que recibe la asignación, en este caso, <code>proyecto</code>. Si se llama a <code>save</code> desde el modelo nuevo (<code>empleado_sin_guardar.save</code>) sólo se guarda este objeto y no la relación.</p>
+
+<p>También se puede usar el método <code>build</code> desde la otra asociación, por ejemplo: <code>empleado.proyectos.build(nombre: &#39;secreto&#39;)</code>.</p>
+
+<p>Existe, como cabe suponer, un método <code>create</code> en ambas relaciones que construye y guarda al mismo tiempo el modelo asociado.</p>
+
+<h1>Asociación uno a uno</h1>
+
+<p>Conociendo el comportamiento de la asociación uno a muchos y muchos a muchos, la asociación uno a uno parece más sencilla. Reproduciremos los mismos escenarios de los casos anteriores. En este ocasión trabajaremos con los modelos <code>Empleado</code> y <code>Puesto</code>. Como ya tenemos creados nuestros modelos, simplemente los asociamos.</p>
+<pre class="highlight ruby"><code><span class="n">puesto</span><span class="p">.</span><span class="nf">empleado</span> <span class="o">=</span> <span class="n">empleado</span>
+<span class="n">puesto</span><span class="p">.</span><span class="nf">empleado</span>
+<span class="c1"># =&gt; #&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt; </span>
+<span class="n">empleado</span><span class="p">.</span><span class="nf">puesto</span>
+<span class="c1"># =&gt; nil</span>
+</code></pre>
+
+<p>Cuando asignamos el modelo que tiene el <code>has_one</code> al modelo que tiene el <code>belongs_to</code>, la relación no se salva automáticamente. Veamos la asignación contraria:</p>
+<pre class="highlight ruby"><code><span class="n">empleado</span><span class="p">.</span><span class="nf">puesto</span> <span class="o">=</span> <span class="n">puesto</span>
+<span class="no">Puesto</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">empleado</span>
+<span class="c1"># =&gt; #&lt;Empleado id: 1, nombre_completo: "Juan Pérez"&gt;</span>
+<span class="no">Empleado</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">puesto</span>
+<span class="c1"># =&gt; #&lt;Puesto id: 1, empleado_id: 1, nombre: "Programador"&gt;</span>
+</code></pre>
+
+<p>El comportamiento es el esperado, al hacer la asignación contraria, la asociación se guarda automáticamente. Probemos ahora cómo se comporta cuando se asocia un modelo que no ha sido salvado:</p>
+<pre class="highlight ruby"><code><span class="n">empleado</span><span class="p">.</span><span class="nf">puesto</span> <span class="o">=</span> <span class="no">Puesto</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">nombre: </span><span class="s1">'Programador Sr'</span><span class="p">)</span>
+<span class="no">Empleado</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="nf">puesto</span>
+<span class="c1"># =&gt; #&lt;Puesto id: 2, empleado_id: 1, nombre: "Programador Sr"&gt;</span>
+</code></pre>
+
+<p>De nuevo, se mantiene el comportamiento visto en la relación uno a muchos, es decir, el nuevo modelo se guarda automáticamente al asignarse a un modelo existente.</p>
+
+<h2><code>build_</code>{association} y <code>create_</code>{association}</h2>
+
+<p>Si queremos asociar un nuevo modelo <code>Puesto</code> al modelo de <code>Empleado</code>, pero sin salvarlo, buscaríamos hacer algo como esto: <code>empleado.puesto.build(nombre: &#39;jefe&#39;)</code>, desafortunadamente eso no funciona, nos arroja un error que dice <code>NoMethodError: undefined method &#39;build&#39; for nil:NilClass</code>. Esto es porque la asociación <code>puesto</code> no corresponde a una clase <em>proxy</em> como en la relación uno a muchos, sino que es ya propiamente el modelo <code>puesto</code> que en este caso es <code>nil</code> (o puede ser un objeto <code>Puesto</code> en caso de que ya tenga un puesto asociado).</p>
+
+<p>Afortunadamente, gracias a un poco de metaprogramación, Rails nos ofrece un método que hace lo que necesitamos. Por cada asociación uno a uno que tengamos, se genera un método. El nombre del método varía según el nombre de la asociación. En nuestro caso, el método se llama <code>build_puesto</code>. Usaremos este método para construir nuestro modelo.</p>
+<pre class="highlight ruby"><code><span class="n">puesto_sin_gurdar</span> <span class="o">=</span> <span class="n">empleado</span><span class="p">.</span><span class="nf">build_puesto</span> <span class="ss">nombre: </span><span class="s1">'Jefe'</span>
+<span class="n">empleado</span><span class="p">.</span><span class="nf">puesto</span>
+<span class="c1"># =&gt; #&lt;Puesto id: nil, empleado_id: 1, nombre: "Jefe"&gt;</span>
+</code></pre>
+
+<p>Aquí, al igual que en las relaciones uno a muchos, podemos salvar cualquiera de los dos modelos (<code>empleado</code> o <code>puesto_sin_guardar</code>) y en ambos casos, se guardará correctamente la asociación.</p>
+
+<p>Así, podemos construir y asociar un modelo sin que sea guardado automáticamente.</p>
+
+<p>De manera similar, existe un método que empieza por <code>create_</code> (<code>create_puesto</code> en nuestro caso) que realiza la asociación y la guarda automáticamente, como la asignación directa. Podemos usar este método para crear y asociar automáticamente un empleado a un puesto, por ejemplo:</p>
+<pre class="highlight ruby"><code><span class="n">puesto_nuevo</span> <span class="o">=</span> <span class="no">Puesto</span><span class="p">.</span><span class="nf">create</span> <span class="s1">'nuevo'</span>
+<span class="n">puesto_nuevo</span><span class="p">.</span><span class="nf">create_empleado</span><span class="p">(</span><span class="ss">nombre_completo: </span><span class="s1">'Mario Guerrero'</span><span class="p">)</span>
+</code></pre>
+
+<h1>Conclusiones</h1>
+
+<p>Las asociaciones en Rails son una parte fundamental en el <em>framework</em> y conocer su funcionamiento resulta muy útil en varios escenarios, particularmente en aquellos en los que el comportamiento, aunque consistente, no siempre resulta intuitivo.
+Trataré de resumir los aspectos importantes que vimos:
+* Las asociaciones uno a uno y uno a muchos tienen tienen un modelo que especifica el <code>belongs_to</code> y otro con <code>has_one</code> o <code>has_many</code> respectivamente. Cuando la asignación se hace del modelo con <code>belongs_to</code> al modelo con <code>has_*</code>, la asignación guarda automáticamente la relación y el modelo asignado en caso de que no exista en la base de datos.
+* Si la asignación se hace en el otro sentido, la relación no se guarda automáticamente.
+* Las asociaciones muchos a muchos salvan automáticamente la relación y el modelo, sin importar en qué sentido se haga la asignación.
+* Para las asociaciones uno a muchos y muchos a muchos, existen los métodos <code>build</code> y <code>new</code> en la asociación (por medio de una clase <em>proxy</em> ), que nos permiten construir modelos asociados sin salvarlos.
+* Para las asociaciones uno a uno, el método existe directamente en el modelo (cualquiera de los dos) y se llama <code>build_#{nombre_de_la_asociacion}</code>.</p>
+
+  </article>
+
+      </section>
+      <footer>
+  <div class="container">
+    <ul class="large-column">
+      <li><h5 class="heading">Recent Articles</h5></li>
+      <li>
+        <ol>
+            <li>
+              <a href="/2015/05/04/directory-tree.html">Directory tree</a>
+              <span>May  4</span>
+            </li>
+            <li>
+              <a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html">Directory structure conventions in RSpec and Minitest</a>
+              <span>Apr 13</span>
+            </li>
+            <li>
+              <a href="/2015/01/12/joins-vs-includes-espanol.html">Joins vs Includes (Español)</a>
+              <span>Jan 12</span>
+            </li>
+            <li>
+              <a href="/2014/12/08/joins-vs-includes.html">Joins vs Includes</a>
+              <span>Dec  8</span>
+            </li>
+            <li>
+              <a href="/2014/09/01/minitest-v4-y-v5.html">Minitest v4 y  v5</a>
+              <span>Sep  1</span>
+            </li>
+            <li>
+              <a href="/2014/07/14/minitest-v4-and-v5.html">Minitest v4 and v5</a>
+              <span>Jul 14</span>
+            </li>
+            <li>
+              <a href="/2014/03/11/formularios-anidados.html">Formularios anidados</a>
+              <span>Mar 11</span>
+            </li>
+            <li>
+              <a href="/2014/02/10/como-solucionar-las-consultas-n-1-en-rails.html">Cómo solucionar consultas N+1 en Rails</a>
+              <span>Feb 10</span>
+            </li>
+            <li>
+              <a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html">How to fix N+1 queries in Rails</a>
+              <span>Feb  3</span>
+            </li>
+            <li>
+              <a href="/2014/01/13/super-in-ruby.html">Super in Ruby</a>
+              <span>Jan 13</span>
+            </li>
+        </ol>
+      </li>
+    </ul>
+
+    <ul class="small-column">
+      <li><h5 class="heading">Tags</h5></li>
+      <li>
+        <ol>
+            <li><a href="/tags/rails.html">Rails (8)</a></li>
+            <li><a href="/tags/activerecord.html">ActiveRecord (7)</a></li>
+            <li><a href="/tags/nested_attributes.html">nested_attributes (1)</a></li>
+            <li><a href="/tags/formularios.html">formularios (1)</a></li>
+            <li><a href="/tags/ruby.html">Ruby (5)</a></li>
+            <li><a href="/tags/struct.html">Struct (1)</a></li>
+            <li><a href="/tags/openstruct.html">OpenStruct (1)</a></li>
+            <li><a href="/tags/asociaciones.html">Asociaciones (1)</a></li>
+            <li><a href="/tags/minitest.html">Minitest (3)</a></li>
+            <li><a href="/tags/rspec.html">RSpec (2)</a></li>
+            <li><a href="/tags/tree.html">tree (1)</a></li>
+        </ol>
+      </li>
+      <ul>
+  </div>
+</footer>
+
+    </div>
+  </body>
+</html>

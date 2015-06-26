@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>El Blog de ApuX - Directory tree</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Nunito:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Dancing Script:400,700" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="main" role="main">
+      <nav>
+  <ul>
+    <li>
+<a class="blog-title" href="/">        El Blog de Ap<span>uX</span>
+</a>      <span class="caption">My Learning about Software Development</span>
+    </li>
+  </ul>
+</nav>
+
+      <section id="content">
+          <article>
+    <h1 class="heading">
+      Directory tree
+      <time>May  4 2015</time>
+    </h1>
+    <p>For <a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html">my previous post</a>, I have to show my projects&rsquo; directory tree. Originally, I had copied-pasted it from my vim. However, there is a command for that task: <code>tree</code>. I didn&rsquo;t have it installed so I had to do it. I&rsquo;m using <code>pacman</code> but you can use <code>yum</code>, <code>apt-get</code> or the equivalent one for your distro.</p>
+<pre class="highlight plaintext"><code>sudo pacman -S tree
+</code></pre>
+
+<p>It is possible to run <code>tree</code> just by executing it.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ tree
+.
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+
+2 directories, 2 files
+</code></pre>
+
+<p>this will recursively show the current directory structure, including files. If you want to show directories only, then use <code>-d</code> option.</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ tree -d
+.
+├── lib
+└── test
+
+2 directories
+</code></pre>
+
+<p>It is possible to show the structure of a specific directory:</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ tree /etc/X11
+
+/etc/X11
+├── xinit
+│   ├── xinitrc
+│   ├── xinitrc.d
+│   │   └── 30-dbus
+│   └── xserverrc
+└── xorg.conf.d
+    └── 10-keyboard.conf
+
+3 directories, 4 files
+</code></pre>
+
+<p>If we want to see hidden files:</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ tree -a
+.
+├── .git
+│   ├── branches
+│   ├── COMMIT_EDITMSG
+│   ├── config
+│   ├── description
+│   ├── HEAD
+│   ├── hooks
+│   │   ├── applypatch-msg.sample
+│   │   ├── commit-msg.sample
+│   │   ├── post-update.sample
+│   │   ├── pre-applypatch.sample
+│   │   ├── pre-commit.sample
+│   │   ├── prepare-commit-msg.sample
+│   │   ├── pre-push.sample
+│   │   ├── pre-rebase.sample
+│   │   └── update.sample
+│   ├── index
+│   ├── info
+│   │   └── exclude
+│   ├── logs
+│   │   ├── HEAD
+│   │   └── refs
+│   │       ├── heads
+│   │       │   ├── master
+│   │       │   └── nested
+│   │       └── remotes
+│   │           └── origin
+│   │               ├── master
+│   │               └── nested
+│   ├── objects
+│   │   ├── 25
+│   │   │   └── 07828dee3799f528010c9b30a23fbe5f183f54
+│   │   ├── 66
+│   │   │   └── e163dc71cbbadc74435427b77ba5668b5326e6
+│   │   ├── 69
+│   │   │   └── 907733efe7e40b756fd5a6338fc746235d9912
+│   │   ├── 7d
+│   │   │   └── 3e2d67baa753b84ab89b443c81b2d518911ad5
+│   │   ├── 9f
+│   │   │   └── b847453d0407123ffff4c120fba4b65777c0bb
+│   │   ├── b7
+│   │   │   └── 10d9b96d88636105f08988fdf2ce9db09aa09b
+│   │   ├── c8
+│   │   │   └── 5b809b75fdce3cc4575853d6d19651de0273cd
+│   │   ├── ca
+│   │   │   └── 1320c9f7d74bc85b8764cf7e31dc916e6fa41b
+│   │   ├── da
+│   │   │   └── 148f531bc6252d23d325dd6c972fb67b8dae55
+│   │   ├── ee
+│   │   │   └── f295927a89e8217970deb8a2040a8d2a9af574
+│   │   ├── f8
+│   │   │   └── 7d0c12f09ba71821e8b4478ff2bc12ad5db570
+│   │   ├── fc
+│   │   │   └── a429691bead1ee677ae549a7dbefa30a5f2841
+│   │   ├── info
+│   │   └── pack
+│   └── refs
+│       ├── heads
+│       │   ├── master
+│       │   └── nested
+│       ├── remotes
+│       │   └── origin
+│       │       ├── master
+│       │       └── nested
+│       └── tags
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+
+31 directories, 38 files
+</code></pre>
+
+<p>Wow! those were many files for one basic project. The <code>.git</code> hidden directory has a lot of nested files and directories. We can specify how deep <code>tree</code> should display with <code>-L number</code>, where <code>number</code> is the level of nested directories/files to show (in our case, 2).</p>
+<pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ tree -a -L 2
+.
+├── .git
+│   ├── branches
+│   ├── COMMIT_EDITMSG
+│   ├── config
+│   ├── description
+│   ├── HEAD
+│   ├── hooks
+│   ├── index
+│   ├── info
+│   ├── logs
+│   ├── objects
+│   └── refs
+├── lib
+│   └── fizz_buzz.rb
+└── test
+    └── fizz_buzz_test.rb
+
+9 directories, 7 files
+</code></pre>
+
+<p>It is possible to have a colored output with the <code>-C</code> option. This shows directories in blue, executable files in green, etc.</p>
+
+<p><code>tree</code> has a lot of options. I showed just a few of them, but you can see all these options by <code>man</code>.</p>
+<pre class="highlight plaintext"><code>man tree
+</code></pre>
+
+<p>or</p>
+<pre class="highlight plaintext"><code>tree --help
+</code></pre>
+
+  </article>
+
+      </section>
+      <footer>
+  <div class="container">
+    <ul class="large-column">
+      <li><h5 class="heading">Recent Articles</h5></li>
+      <li>
+        <ol>
+            <li>
+              <a href="/2015/05/04/directory-tree.html">Directory tree</a>
+              <span>May  4</span>
+            </li>
+            <li>
+              <a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html">Directory structure conventions in RSpec and Minitest</a>
+              <span>Apr 13</span>
+            </li>
+            <li>
+              <a href="/2015/01/12/joins-vs-includes-espanol.html">Joins vs Includes (Español)</a>
+              <span>Jan 12</span>
+            </li>
+            <li>
+              <a href="/2014/12/08/joins-vs-includes.html">Joins vs Includes</a>
+              <span>Dec  8</span>
+            </li>
+            <li>
+              <a href="/2014/09/01/minitest-v4-y-v5.html">Minitest v4 y  v5</a>
+              <span>Sep  1</span>
+            </li>
+            <li>
+              <a href="/2014/07/14/minitest-v4-and-v5.html">Minitest v4 and v5</a>
+              <span>Jul 14</span>
+            </li>
+            <li>
+              <a href="/2014/03/11/formularios-anidados.html">Formularios anidados</a>
+              <span>Mar 11</span>
+            </li>
+            <li>
+              <a href="/2014/02/10/como-solucionar-las-consultas-n-1-en-rails.html">Cómo solucionar consultas N+1 en Rails</a>
+              <span>Feb 10</span>
+            </li>
+            <li>
+              <a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html">How to fix N+1 queries in Rails</a>
+              <span>Feb  3</span>
+            </li>
+            <li>
+              <a href="/2014/01/13/super-in-ruby.html">Super in Ruby</a>
+              <span>Jan 13</span>
+            </li>
+        </ol>
+      </li>
+    </ul>
+
+    <ul class="small-column">
+      <li><h5 class="heading">Tags</h5></li>
+      <li>
+        <ol>
+            <li><a href="/tags/rails.html">Rails (8)</a></li>
+            <li><a href="/tags/activerecord.html">ActiveRecord (7)</a></li>
+            <li><a href="/tags/nested_attributes.html">nested_attributes (1)</a></li>
+            <li><a href="/tags/formularios.html">formularios (1)</a></li>
+            <li><a href="/tags/ruby.html">Ruby (5)</a></li>
+            <li><a href="/tags/struct.html">Struct (1)</a></li>
+            <li><a href="/tags/openstruct.html">OpenStruct (1)</a></li>
+            <li><a href="/tags/asociaciones.html">Asociaciones (1)</a></li>
+            <li><a href="/tags/minitest.html">Minitest (3)</a></li>
+            <li><a href="/tags/rspec.html">RSpec (2)</a></li>
+            <li><a href="/tags/tree.html">tree (1)</a></li>
+        </ol>
+      </li>
+      <ul>
+  </div>
+</footer>
+
+    </div>
+  </body>
+</html>

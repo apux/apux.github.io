@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
+    <title>El Blog de ApuX - How to fix N+1 queries in Rails</title>
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
+    <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
+    <link href='//fonts.googleapis.com/css?family=Nunito:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+    <link href="http://fonts.googleapis.com/css?family=Dancing Script:400,700" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    <div id="main" role="main">
+      <nav>
+  <ul>
+    <li>
+<a class="blog-title" href="/">        El Blog de Ap<span>uX</span>
+</a>      <span class="caption">My Learning about Software Development</span>
+    </li>
+  </ul>
+</nav>
+
+      <section id="content">
+          <article>
+    <h1 class="heading">
+      How to fix N+1 queries in Rails
+      <time>Feb  3 2014</time>
+    </h1>
+    <p>One of the most commons performance issues in Rails is related to N+1 queries. Fortunately, our framework includes a simple solution for this problem that we must know in order to avoid some headaches.</p>
+
+<p>For those who don&rsquo;t know, the issue of N+1 queries usually appears when we have two or more associated models, e.g. <code>Employee</code> which has one <code>Computer</code>, and we want to show information about all the employees as well as their computers. This provokes rails to execute one query to load the employees, and then, one query for each computer. If the company has 10 employees, 11 queries are executed.</p>
+
+<p>Let&rsquo;s see an example:</p>
+<pre class="highlight ruby"><code><span class="c1">#app/models/employee.rb</span>
+<span class="k">class</span> <span class="nc">Employee</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_one</span> <span class="ss">:computer</span>
+<span class="k">end</span>
+
+<span class="c1">#app/models/computer.rb</span>
+<span class="k">class</span> <span class="nc">Computer</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:employee</span>
+<span class="k">end</span>
+</code></pre>
+
+<p>We want to list all the employees with their computers.</p>
+<pre class="highlight erb"><code><span class="nt">&lt;p&gt;</span>
+  <span class="cp">&lt;%</span> <span class="n">employees</span> <span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">all</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;ul&gt;</span>
+    <span class="cp">&lt;%</span> <span class="n">employees</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">employee</span><span class="o">|</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;li&gt;</span>
+        <span class="nt">&lt;strong&gt;</span>Name:<span class="nt">&lt;/strong&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">employee</span><span class="p">.</span><span class="nf">name</span> <span class="cp">%&gt;</span>
+        <span class="nt">&lt;strong&gt;</span>Computer<span class="nt">&lt;/strong&gt;</span>
+        <span class="cp">&lt;%=</span> <span class="n">employee</span><span class="p">.</span><span class="nf">computer</span><span class="p">.</span><span class="nf">brand</span> <span class="cp">%&gt;</span>
+      <span class="nt">&lt;/li&gt;</span>
+    <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+  <span class="nt">&lt;/ul&gt;</span>
+<span class="nt">&lt;/p&gt;</span>
+</code></pre>
+
+<p>If we check the logs, we can see these kinds of output:</p>
+<pre class="highlight plaintext"><code>Employee Load (0.3ms)  SELECT "employees".* FROM "employees"
+Computer Load (0.2ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 1]]
+Computer Load (0.2ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 2]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 3]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 4]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 5]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 6]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 7]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 8]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 9]]
+Computer Load (0.1ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" = ? LIMIT 1  [["employee_id", 10]]
+</code></pre>
+
+<p>That indicates we are having a N+1 issue. We can solve this problem using eager loading. In Rails, that can be done using <code>includes</code> to indicate the query must load not only the data from the employee but also the data from its computer.</p>
+<pre class="highlight ruby"><code><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="sx">% employees </span><span class="o">=</span> <span class="no">Employee</span><span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:computer</span><span class="p">).</span><span class="nf">all</span> <span class="sx">%&gt;
+  &lt;ul&gt;</span>
+    <span class="o">&lt;</span><span class="sx">% employees.each </span><span class="k">do</span> <span class="o">|</span><span class="n">employee</span><span class="o">|</span> <span class="sx">%&gt;
+      &lt;li&gt;</span>
+        <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="no">Name</span><span class="ss">:&lt;</span><span class="o">/</span><span class="n">strong</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="sx">%= employee.name %&gt;
+        &lt;strong&gt;Computer&lt;/strong&gt;
+        &lt;%=</span> <span class="n">employee</span><span class="p">.</span><span class="nf">computer</span><span class="p">.</span><span class="nf">brand</span> <span class="sx">%&gt;
+      &lt;/li&gt;</span>
+    <span class="o">&lt;</span><span class="sx">% end </span><span class="o">%&gt;</span>
+  <span class="o">&lt;</span><span class="sr">/ul&gt;
+&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</code></pre>
+
+<p>If we check the logs now, we can see that Rails just performed one query:</p>
+<pre class="highlight plaintext"><code>Computer Load (0.6ms)  SELECT "computers".* FROM "computers" WHERE "computers"."employee_id" IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+</code></pre>
+
+<p>It reduced the queries to only 1. It might not seem like a big improvement here, but if the company has 1,000 employees, you avoid hitting the database 1,000 times when a person visit this page, and in that case, the difference would be important.</p>
+
+<p>And, just to clarify, I&rsquo;m using this code as an example for ease, but I&rsquo;m not recommending making the query from the view. We have to move part of this code where it belongs (models or controllers).</p>
+
+  </article>
+
+      </section>
+      <footer>
+  <div class="container">
+    <ul class="large-column">
+      <li><h5 class="heading">Recent Articles</h5></li>
+      <li>
+        <ol>
+            <li>
+              <a href="/2015/05/04/directory-tree.html">Directory tree</a>
+              <span>May  4</span>
+            </li>
+            <li>
+              <a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html">Directory structure conventions in RSpec and Minitest</a>
+              <span>Apr 13</span>
+            </li>
+            <li>
+              <a href="/2015/01/12/joins-vs-includes-espanol.html">Joins vs Includes (Español)</a>
+              <span>Jan 12</span>
+            </li>
+            <li>
+              <a href="/2014/12/08/joins-vs-includes.html">Joins vs Includes</a>
+              <span>Dec  8</span>
+            </li>
+            <li>
+              <a href="/2014/09/01/minitest-v4-y-v5.html">Minitest v4 y  v5</a>
+              <span>Sep  1</span>
+            </li>
+            <li>
+              <a href="/2014/07/14/minitest-v4-and-v5.html">Minitest v4 and v5</a>
+              <span>Jul 14</span>
+            </li>
+            <li>
+              <a href="/2014/03/11/formularios-anidados.html">Formularios anidados</a>
+              <span>Mar 11</span>
+            </li>
+            <li>
+              <a href="/2014/02/10/como-solucionar-las-consultas-n-1-en-rails.html">Cómo solucionar consultas N+1 en Rails</a>
+              <span>Feb 10</span>
+            </li>
+            <li>
+              <a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html">How to fix N+1 queries in Rails</a>
+              <span>Feb  3</span>
+            </li>
+            <li>
+              <a href="/2014/01/13/super-in-ruby.html">Super in Ruby</a>
+              <span>Jan 13</span>
+            </li>
+        </ol>
+      </li>
+    </ul>
+
+    <ul class="small-column">
+      <li><h5 class="heading">Tags</h5></li>
+      <li>
+        <ol>
+            <li><a href="/tags/rails.html">Rails (8)</a></li>
+            <li><a href="/tags/activerecord.html">ActiveRecord (7)</a></li>
+            <li><a href="/tags/nested_attributes.html">nested_attributes (1)</a></li>
+            <li><a href="/tags/formularios.html">formularios (1)</a></li>
+            <li><a href="/tags/ruby.html">Ruby (5)</a></li>
+            <li><a href="/tags/struct.html">Struct (1)</a></li>
+            <li><a href="/tags/openstruct.html">OpenStruct (1)</a></li>
+            <li><a href="/tags/asociaciones.html">Asociaciones (1)</a></li>
+            <li><a href="/tags/minitest.html">Minitest (3)</a></li>
+            <li><a href="/tags/rspec.html">RSpec (2)</a></li>
+            <li><a href="/tags/tree.html">tree (1)</a></li>
+        </ol>
+      </li>
+      <ul>
+  </div>
+</footer>
+
+    </div>
+  </body>
+</html>
