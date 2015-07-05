@@ -4,8 +4,8 @@ date: 2015-04-13
 tags: [Ruby, RSpec, Minitest]
 ---
 
-When we create a new project in Ruby, the basic structure is putting the code in a directory named `lib`. We can also add a directory named `test` or `spec` for our testing files. It is not mandatory, but it is a convention that we should follow, not only because our directory structure will be more intuitive, but also because the testing frameworks sometimes assume it.
-If we want to use RSpec, the directory name should be `spec`. If we want to use Minitest, we are allowed to name it the way we want, but it is common to named it `test` or `spec` as well.
+When we create a new project in Ruby, the basic structure is putting the code in a directory named `lib`. We can also add a directory named `test` or `spec` for our testing files. That is not mandatory, but it is a convention that we should follow, not only because our directory structure will be more intuitive, but also because the testing frameworks sometimes assume it.
+If we want to use RSpec, the directory name should be `spec`. If we prefer Minitest, we are allowed to name it the way we want, but it is common to named it `test` or `spec` as well.
 
 ## RSpec
 
@@ -55,7 +55,7 @@ Finished in 0.00151 seconds (files took 0.1615 seconds to load)
 1 example, 0 failures
 ```
 
-I'm starting with a passing test because the result is less verbose, but we know that we should start with a failing test, right?, right? :)
+I'm starting with a passing test because the result is less verbose, but you know that you should start with a failing test, right?, right? :)
 
 As we can see, we didn't need any extra configuration. In our `fizz_buzz_spec` file, we required the `fizz_buzz` file and nothing more. Actually, we didn't need to require the `rspec` library and we didn't specify where our test files were. We just run the `rspec` command from the command line in our project directory and RSpec did the rest.
 
@@ -111,7 +111,7 @@ Finished in 0.00031 seconds (files took 0.07711 seconds to load)
 0 examples, 0 failures
 ```
 
-Again, RSpec didn't load our file because it does not follow the name convention. If we name it back to `fizz_buzz_spec.rb`, it will work.
+RSpec didn't load our file because it does not follow the name convention. If we name it back to `fizz_buzz_spec.rb`, it will work again.
 
 If we see the testing file, we can see we didn't need any special configuration to load the `fizz_buzz.rb` besides requiring it. RSpec assumes that our code is in a `lib` directory and that is why it can load our file correctly. Let's try to rename the `lib` directory and see what happen.
 
@@ -123,7 +123,7 @@ fizz_buzz_rspec
     └── fizz_buzz_spec.rb
 ```
 
-If we try to run rspec.
+If we try to run `rspec`.
 
 ```
 [fizz_buzz_rspec]$ rspec
@@ -139,7 +139,17 @@ So, as we can see, it is better to stick to the conventions when we use RSpec.
 
 ### `spec_helper`
 
-It is common to use a `spec_helper` file. When our project grows, we need to include more testing libraries, or add more tasks to do before or after testing. For example, we would like to include `shoulda`, or to clean the database. This tasks affects many testing files, so, it is better to have it in its own file and include it in the other files. Our example does not need anything else, but I just want to show how it would be if it needed it.
+It is common to use a `spec_helper` file. When our project grows, we need to include more testing libraries, or add more tasks to do before or after testing. For example, we would like to include `shoulda`, or to clean the database. This tasks affect many testing files, so, it is better to have them in one file and include it in the other files. Our example does not need anything else, but I just want to show how it would be if it needed it.
+
+Let's say we want to use the `rspec-given` gem. After installing it, we need to add this line in the `fizz_buzz_spec.rb` file:
+
+`#spec/fizz_buzz_spec.rb`
+
+```ruby
+require 'rspec/given'
+```
+
+In our project, we only have one file, but if we had more, we would have to add that line to every single spec file. In order to avoid that, we can use a `spec_helper`.
 
 First, we need to create a `spec_helper.rb` file in our `spec` directory.
 
@@ -161,15 +171,15 @@ require 'spec_helper'
 require 'fizz_buzz'
 
 describe FizzBuzz do
-  it 'returns "1" when receives 1' do
-    expect(FizzBuzz.new.convert(1).to eq '1'
-  end
+  Given(:fizz_buzz) { FizzBuzz.new }
+  When(:result) { fizz_buzz.convert(1) }
+  Then { result == '1' }
 end
 ```
 
 If we run it now, it executes correctly. It doesn't matter where our test file is (for example, it could be under `spec/models/inbox/fizz_buzz_spec.rb`) it will be able to require the `spec_helper` with `require 'spec_helper'`.
 
-As I said before, we don't need to add anything to our `spec_helper` file, but I'll show how a `spec_helper` file in Rails looks, just as an example:
+Let's see how a Rails's `spec_helper` file looks, just as an example:
 
 `spec/spec_helper.rb`
 
@@ -186,7 +196,7 @@ RSpec.configure do |config|
 end
 ```
 
-It loads all the libraries it needs to work with, and configure RSpec to use transactional fixtures and execute the tests in random order.
+It loads all the libraries it needs to work with, and configures RSpec to use transactional fixtures and to execute the tests in random order.
 
 Note that this time, `spec_helper` is just another file, it can be named differently and it will still work as longs as it is required with the correct name.
 
@@ -195,7 +205,7 @@ Note that this time, `spec_helper` is just another file, it can be named differe
 
 Minitest allows us to name our directories the way we want, but we need to have it in mind because it is important when running our tests.
 
-Because I like to follow the conventions, I created the project with a structure very similar to the RSpec's one.
+I like to follow the conventions, so I created the project with a structure very similar to the RSpec's one.
 
 ```
 fizz_buzz_minitest
@@ -228,9 +238,9 @@ class FizzBuzz
 end
 ```
 
-The first thing I'd like to point out is that in Minitest it is mandatory to require the Minitest library, specifically, the `minitest/autorun`, which provides everything we need to execute the test (e.g. the assertions methods). Note that I'm using the _spec_ syntax here, but it is also possible to use the classic syntax for Minitest.
+The first thing I'd like to point out is that in Minitest it is mandatory to require the Minitest library, specifically `minitest/autorun`, which provides everything we need to execute the test (e.g. the assertions methods). Note that I'm using the _spec_ syntax here, but it is also possible to use the classic syntax for Minitest.
 
-Now, we don't have a `minitest` command to run, as we had with RSpec. Minitest is a very basic (but very powerful) testing framework. One of its strengths is that it is not a DSL (like RSpec), but simple Ruby. So, in order to execute our test, we need to run just ruby.
+Now, we don't have a `minitest` command to run, as we had with RSpec. Minitest is a very basic (but very powerful) testing framework. One of its strengths is that it is not a DSL (like RSpec), but simple Ruby (although our syntax uses the DLS style). Anyway, in order to execute our test, we need to run just ruby.
 
 ```
 [fizz_buzz_minitest]$ ruby test/fizz_buzz_test.rb
@@ -239,7 +249,7 @@ Now, we don't have a `minitest` command to run, as we had with RSpec. Minitest i
         from test/fizz_buzz_test.rb:1:in `<main>'
 ```
 
-Humm, it actually executed something, but it didn't go well. What happened here is that it was not possible to load the `fizz_buzz` file. Luckily, it is something easy to solve. Ruby includes a `require_relative` to require a file specifying a relative path. This path must be built based on the current file path. In our case, our test file is inside a `test` directory, so the path has to move backward one directory and then add the path to the required file.
+Humm, it actually executed something, but it didn't go well. What happened here is that it was not possible to load the `fizz_buzz` file. Luckily, it is something easy to solve. Ruby includes `require_relative` to require a file specifying a relative path. This path must be built based on the current file path. In our case, our test file is inside a `test` directory, so the path has to move backward one directory (with `..`) and then add the path to the required file.
 
 Our testing file now looks this way.
 
@@ -308,9 +318,9 @@ Finished in 0.000820s, 1220.1178 runs/s, 1220.1178 assertions/s.
 1 runs, 1 assertions, 0 failures, 0 errors, 0 skips
 ```
 
-We used the `-I` flag, indicating that ruby should load the directory `lib`.
+We used the `-I` option, indicating that ruby should load the directory `lib`.
 
-Note that with minitest, it doesn't matter how the files and directories are named, it will just work. Example:
+Note that with minitest it doesn't matter how the files and directories are named, it will just work. Example:
 
 ```
 fizz_buzz_minitest
@@ -406,4 +416,4 @@ Fabulous run in 0.000797s, 1254.2865 runs/s, 1254.2865 assertions/s.
 
 And... every thing is working again.
 
-As we can see, Minitest does not assume a specific directory structure, because we can specify its dependencies as command line options. However, I recommend to use the one we saw here because is a very widespread one. Any developer could figure out where to find which files, and it is easy to grow if we want to use rake (for example) to run our test in batches.
+As we can see, Minitest does not assume a specific directory structure, because we can specify its dependencies as command line options. However, I recommend to use the same structure we use with RSpec because is a very widespread one. Any developer could figure out where to find which files, and it is easy to grow if we want to use rake (for example) to run our test in batches. We will talk about that in a future post.
