@@ -11,6 +11,7 @@ gem "neat"
 gem "nokogiri"
 gem "middleman-syntax"
 gem "redcarpet"
+gem "middleman-disqus"
 
 # For feed.xml.builder
 gem "builder", "~> 3.0"

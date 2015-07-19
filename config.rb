@@ -111,3 +111,7 @@ end
 activate :syntax
 set :markdown_engine, :redcarpet
 set :markdown, fenced_code_blocks: true, smartypants: true
+
+activate :disqus do |d|
+  d.shortname = 'elblogdeapux' # Replace with your Disqus shortname.
+end
