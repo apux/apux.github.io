@@ -14,11 +14,11 @@
     <link rel="alternate" href="http://blog.url.com/2015/05/04/directory-tree.html"/>
     <id>http://blog.url.com/2015/05/04/directory-tree.html</id>
     <published>2015-05-03T19:00:00-05:00</published>
-    <updated>2015-06-26T14:58:03-05:00</updated>
+    <updated>2015-07-19T23:34:52-05:00</updated>
     <author>
       <name>Article Author</name>
     </author>
-    <content type="html">&lt;p&gt;For &lt;a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html"&gt;my previous post&lt;/a&gt;, I have to show my projects&amp;rsquo; directory tree. Originally, I had copied-pasted it from my vim. However, there is a command for that task: &lt;code&gt;tree&lt;/code&gt;. I didn&amp;rsquo;t have it installed so I had to do it. I&amp;rsquo;m using &lt;code&gt;pacman&lt;/code&gt; but you can use &lt;code&gt;yum&lt;/code&gt;, &lt;code&gt;apt-get&lt;/code&gt; or the equivalent one for your distro.&lt;/p&gt;
+    <content type="html">&lt;p&gt;For &lt;a href="/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html"&gt;my previous post&lt;/a&gt;, I had to show my projects&amp;rsquo; directory tree. Originally, I had copied and pasted it from my Vim. However, there is a command for that task: &lt;code&gt;tree&lt;/code&gt;. I didn&amp;rsquo;t have it installed so I had to do it. I&amp;rsquo;m using &lt;code&gt;pacman&lt;/code&gt; but you can use &lt;code&gt;yum&lt;/code&gt;, &lt;code&gt;apt-get&lt;/code&gt; or the equivalent one for your distro.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;sudo pacman -S tree
 &lt;/code&gt;&lt;/pre&gt;
 
