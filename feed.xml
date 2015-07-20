@@ -5,16 +5,166 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2015-05-03T19:00:00-05:00</updated>
+  <updated>2015-07-20T12:23:00-05:00</updated>
   <author>
     <name>Blog Author</name>
   </author>
+  <entry>
+    <title>Using Vim Regexp to Update to RSpec 3 Syntax</title>
+    <link rel="alternate" href="http://blog.url.com/2015/07/20/using-vim-regexp-to-update-to-rspec3-syntax.html"/>
+    <id>http://blog.url.com/2015/07/20/using-vim-regexp-to-update-to-rspec3-syntax.html</id>
+    <published>2015-07-20T12:23:00-05:00</published>
+    <updated>2015-07-20T17:12:15-05:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;Recently, I had to update a project that uses RSpec. Part of the migration consisted in updating the RSpec syntax from version 2 to version 3. Since I use Vim, I ended up creating a bunch of regular expressions to make those updates. Here I will show you how I created them (and what I learned doing it).&lt;/p&gt;
+
+&lt;p&gt;The main change is RSpec 3 is not monkey-patching objects any more, and because of that it is not possible to use sentences like this:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;value&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;should&lt;/span&gt; &lt;span class="o"&gt;==&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The new way to do it in RSpec 3 is:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;expect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;value&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="n"&gt;eq&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And that is the change we need to do with our regular expressions.&lt;/p&gt;
+
+&lt;p&gt;Vim&amp;rsquo;s regular expressions are a little different from Ruby&amp;rsquo;s one because we will need to escape more characters in order to have it working.&lt;/p&gt;
+
+&lt;p&gt;In Ruby, a regexp that finds a &lt;code&gt;.should&lt;/code&gt; could be:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;/\.should/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;For example:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="s2"&gt;"value.should == 1"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;match&lt;/span&gt; &lt;span class="sr"&gt;/\.should/&lt;/span&gt;
+&lt;span class="c1"&gt;# =&amp;gt; #&amp;lt;MatchData ".should"&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By escaping the dot &lt;code&gt;\.&lt;/code&gt; we ensure that it matches an actual dot &lt;code&gt;.&lt;/code&gt;, otherwise, it will match any character because the dot actually means that in regular expressions: any character.&lt;/p&gt;
+
+&lt;p&gt;Example with unescaped dot:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="s2"&gt;"value.should == 1"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;match&lt;/span&gt; &lt;span class="sr"&gt;/.should/&lt;/span&gt;
+&lt;span class="c1"&gt;# =&amp;gt; #&amp;lt;MatchData ".should"&amp;gt;&lt;/span&gt;
+
+&lt;span class="s2"&gt;"value_should == 1"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;match&lt;/span&gt; &lt;span class="sr"&gt;/.should/&lt;/span&gt;
+&lt;span class="c1"&gt;# =&amp;gt; #&amp;lt;MatchData "_should"&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Example with escaped dot:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="s2"&gt;"value.should == 1"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;match&lt;/span&gt; &lt;span class="sr"&gt;/\.should/&lt;/span&gt;
+&lt;span class="c1"&gt;# =&amp;gt; #&amp;lt;MatchData ".should"&amp;gt;&lt;/span&gt;
+
+&lt;span class="s2"&gt;"value_should == 1"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;match&lt;/span&gt; &lt;span class="sr"&gt;/\.should/&lt;/span&gt;
+&lt;span class="c1"&gt;# =&amp;gt; nil&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This is the behaviour we are looking for.&lt;/p&gt;
+
+&lt;p&gt;It also works the same way in Vim. If we search this pattern in Vim, it will find a line that contains &lt;code&gt;.should&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;We can try it in Vim&amp;rsquo;s search mode.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;/\.should
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It works as expected. Great!&lt;/p&gt;
+
+&lt;h2&gt;Capture group&lt;/h2&gt;
+
+&lt;p&gt;Now, we want to capture the string (the group of characters) that precedes &lt;code&gt;.should&lt;/code&gt;. We can do this in Ruby:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;/(.+)\.should/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Te plus sign &lt;code&gt;+&lt;/code&gt; indicates one or more repetitions of the previous character. In this case the previous character is &lt;em&gt;any character&lt;/em&gt;, since we did not escape de dot &lt;code&gt;.&lt;/code&gt; this time because it is the behaviour we are looking for. It will match any string that contains &lt;code&gt;.should&lt;/code&gt; and it will capture all the characters behind it.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;rsquo;s see how it works.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="s2"&gt;"value.should == 1"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;match&lt;/span&gt; &lt;span class="sr"&gt;/.+\.should/&lt;/span&gt;
+&lt;span class="c1"&gt;# =&amp;gt; #&amp;lt;MatchData "value.should" 1:"value"&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You can see it matched and, additionally, it contains the string we captured (&lt;code&gt;1:&amp;quot;value&amp;quot;&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;But if we try to use it in Vim it will not work. We need to escape both parenthesis &lt;code&gt;(&lt;/code&gt; and &lt;code&gt;)&lt;/code&gt;, and the plus sign &lt;code&gt;+&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;/\(.\+\)\.should/
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now it will match in Vim.&lt;/p&gt;
+
+&lt;p&gt;In Ruby, it is possible to use the captured string with the special global variable &lt;code&gt;$1&lt;/code&gt;. Example:&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="s2"&gt;"value.should == 1"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;match&lt;/span&gt; &lt;span class="sr"&gt;/(.+)\.should/&lt;/span&gt;
+&lt;span class="vg"&gt;$1&lt;/span&gt;
+&lt;span class="c1"&gt;# =&amp;gt; "value"&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In Vim, this value is stored in &lt;code&gt;\1&lt;/code&gt; and we can use it while replacing. Example:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;:%s/\(.\+\)\.should/expect(\1).to/g
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And it worked! It changed all the lines containing &lt;code&gt;.should&lt;/code&gt; .&lt;/p&gt;
+
+&lt;p&gt;There was only one problem, if the line is indented (and chances are it is), our replace command will include the blank spaces inside the parenthesis.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;expect&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;      &lt;span class="n"&gt;value&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="n"&gt;eq&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To avoid it, we need to improve our regexp. Let&amp;rsquo;s do that by capturing all the blank spaces at the beginning of the line, and adding them to the new string. We can use &lt;code&gt;^&lt;/code&gt; to indicate the beginning of a line in both Ruby and Vim, and it is not necessary to escape it.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;:%s/^\( \+\)\(.\+\)\.should/\1expect(\2).to/g
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Since a new captured pattern was introduced before the one we previously had, the numbering were also altered and now the blank spaces are stored in &lt;code&gt;\1&lt;/code&gt; and the following string in &lt;code&gt;\2&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Variants&lt;/h2&gt;
+
+&lt;p&gt;The regexp we just build is too generic for our requirements. Specifically, it ignores that the matchers have to change too.&lt;/p&gt;
+
+&lt;p&gt;RSpec 3 does not support some matchers that version 2 did. For example, &lt;code&gt;==&lt;/code&gt;, and &lt;code&gt;=~&lt;/code&gt;, &lt;code&gt;be_true&lt;/code&gt; needs to be changed to &lt;code&gt;be_truthy&lt;/code&gt;, etcetera.&lt;/p&gt;
+
+&lt;p&gt;So, I prefer to run specific replacements for each one. These are what I used.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;:%s/^\( \+\)\(.\+\)\.should be_true/\1expect(\2).to be_truthy/g
+:%s/^\( \+\)\(.\+\)\.should be_false/\1expect(\2).to be_falsey/g
+:%s/^\( \+\)\(.\+\)\.should == nil/\1expect(\2).to be_nil/g
+:%s/^\( \+\)\(.\+\)\.should ==/\1expect(\2).to eq/g
+:%s/^\( \+\)\(.\+\)\.should =\~/\1expect(\2).to match/g
+:%s/^\( \+\)\(.\+\)\.should_not ==/\1expect(\2).not_to eq/g
+:%s/^\( \+\)\(.\+\)\.should/\1expect(\2).to/g
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Executing these commands in this order does most of the work.&lt;/p&gt;
+
+&lt;p&gt;The first 3 commands change the expectations about booleans and nil. The forth one changes the &lt;code&gt;==&lt;/code&gt; matcher to &lt;code&gt;eq&lt;/code&gt;. Then we change the &lt;code&gt;=~&lt;/code&gt; (for regexp) to &lt;code&gt;match&lt;/code&gt; (note that we had to escape the &lt;code&gt;~&lt;/code&gt;). The following command replaces the &lt;code&gt;should_not&lt;/code&gt; with &lt;code&gt;==&lt;/code&gt; to &lt;code&gt;not_to eq&lt;/code&gt;, and, finally, we use the generic replace to change everything else (this will match remaining expectations like &lt;code&gt;render.should redirect_to(path)&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h2&gt;stub&lt;/h2&gt;
+
+&lt;p&gt;Stubbing syntax was also modified in this version.&lt;/p&gt;
+
+&lt;p&gt;In RSpec 2, this was the syntax.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;my_object&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;stub&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:my_method&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;and_return&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;In RSpec 3, this is the new syntax.&lt;/p&gt;
+&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;my_object&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;to&lt;/span&gt; &lt;span class="n"&gt;receive&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:my_method&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;and_return&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So, we need to capture the indentation spaces and the object. It could be done with this:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;:%s/^\( \+\)\(.\+\)\.stub/\1allow(\2).to receive/g
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;But again, it is too generic, because we can have &lt;code&gt;any_instance.stub&lt;/code&gt; and &lt;code&gt;.stub_chain&lt;/code&gt; and these lines will match too, but, obviously, it will not be changed correctly. In that case, it is preferable to replace them first and execute our replacements in this order.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;:%s/^\( \+\)\(.\+\)\.any_instance.stub/\1allow_any_instance_of(\2).to receive/g
+:%s/^\( \+\)\(.\+\)\.stub_chain/\1allow(\2).to receive_message_chain/g
+:%s/^\( \+\)\(.\+\)\.stub/\1allow(\2).to receive/g
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we have it. In my case, I had no more special cases to attend, but if you have, I hope this explanation could help you to build your own commands for replacing.&lt;/p&gt;
+
+&lt;p&gt;Any corrections or suggestions are welcome.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Directory tree</title>
     <link rel="alternate" href="http://blog.url.com/2015/05/04/directory-tree.html"/>
     <id>http://blog.url.com/2015/05/04/directory-tree.html</id>
     <published>2015-05-03T19:00:00-05:00</published>
-    <updated>2015-07-19T23:34:52-05:00</updated>
+    <updated>2015-07-19T23:35:43-05:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -133,7 +283,7 @@
 31 directories, 38 files
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Wow! those were many files for one basic project. The &lt;code&gt;.git&lt;/code&gt; hidden directory has a lot of nested files and directories. We can specify how deep &lt;code&gt;tree&lt;/code&gt; should display with &lt;code&gt;-L number&lt;/code&gt;, where &lt;code&gt;number&lt;/code&gt; is the level of nested directories/files to show (in our case, 2).&lt;/p&gt;
+&lt;p&gt;Wow!, those were many files for one basic project. The &lt;code&gt;.git&lt;/code&gt; hidden directory has a lot of nested files and directories. We can specify how deep &lt;code&gt;tree&lt;/code&gt; should display with &lt;code&gt;-L number&lt;/code&gt;, where &lt;code&gt;number&lt;/code&gt; is the level of nested directories/files to show (in our case, 2).&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree -a -L 2
 .
 ├── .git
@@ -769,56 +919,6 @@ Fabulous run in 0.000797s, 1254.2865 runs/s, 1254.2865 assertions/s.
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Este código funciona bien en ambas versiones.&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Minitest v4 and v5</title>
-    <link rel="alternate" href="http://blog.url.com/2014/07/14/minitest-v4-and-v5.html"/>
-    <id>http://blog.url.com/2014/07/14/minitest-v4-and-v5.html</id>
-    <published>2014-07-13T19:00:00-05:00</published>
-    <updated>2015-06-26T14:58:03-05:00</updated>
-    <author>
-      <name>Article Author</name>
-    </author>
-    <content type="html">&lt;p&gt;The current version of Minitest is 5, this is what we get if you do &lt;code&gt;gem install minitest&lt;/code&gt;. However, chances are that our version is 4, because it is the version included in Ruby. I mean, if we didn&amp;rsquo;t install Minitest explicitly, then we are using the one packet with the interpreter.&lt;/p&gt;
-
-&lt;p&gt;For us, the main difference is the class we need to inherit.&lt;/p&gt;
-
-&lt;p&gt;In version 4, we inherit from &lt;code&gt;MiniTest::Unit::TestCase&lt;/code&gt;. Example:&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;MiniTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Unit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;TestCase&lt;/span&gt;
-  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
-    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="k"&gt;end&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Note that the Minitest module is &lt;code&gt;MiniTest&lt;/code&gt; with a capital T.&lt;/p&gt;
-
-&lt;p&gt;In version 5, we inherit from &lt;code&gt;Minitest::Test&lt;/code&gt;. Example:&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;Minitest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Test&lt;/span&gt;
-  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
-    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="k"&gt;end&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Now, the module is &lt;code&gt;Minitest&lt;/code&gt; and the hierarchy changed.&lt;/p&gt;
-
-&lt;p&gt;If we prefer the spec syntax, we don&amp;rsquo;t have to change anything.&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
-
-&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s2"&gt;"is '1' when receives 1"&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="k"&gt;end&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This code works well in both versions.&lt;/p&gt;
 </content>
   </entry>
 </feed>
