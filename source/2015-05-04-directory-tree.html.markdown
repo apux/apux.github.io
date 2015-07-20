@@ -4,7 +4,7 @@ date: 2015-05-04
 tags: [tree]
 ---
 
-For [my previous post](/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html), I have to show my projects' directory tree. Originally, I had copied-pasted it from my vim. However, there is a command for that task: `tree`. I didn't have it installed so I had to do it. I'm using `pacman` but you can use `yum`, `apt-get` or the equivalent one for your distro.
+For [my previous post](/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html), I had to show my projects' directory tree. Originally, I had copied and pasted it from my Vim. However, there is a command for that task: `tree`. I didn't have it installed so I had to do it. I'm using `pacman` but you can use `yum`, `apt-get` or the equivalent one for your distro.
 
     sudo pacman -S tree
 
@@ -127,7 +127,7 @@ If we want to see hidden files:
 31 directories, 38 files
 ```
 
-Wow! those were many files for one basic project. The `.git` hidden directory has a lot of nested files and directories. We can specify how deep `tree` should display with `-L number`, where `number` is the level of nested directories/files to show (in our case, 2).
+Wow!, those were many files for one basic project. The `.git` hidden directory has a lot of nested files and directories. We can specify how deep `tree` should display with `-L number`, where `number` is the level of nested directories/files to show (in our case, 2).
 
 ```
 [fizz_buzz_minitest]$ tree -a -L 2
