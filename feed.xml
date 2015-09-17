@@ -14,7 +14,7 @@
     <link rel="alternate" href="http://blog.url.com/2015/07/20/using-vim-regexp-to-update-to-rspec3-syntax.html"/>
     <id>http://blog.url.com/2015/07/20/using-vim-regexp-to-update-to-rspec3-syntax.html</id>
     <published>2015-07-20T12:23:00-05:00</published>
-    <updated>2015-07-20T17:12:15-05:00</updated>
+    <updated>2015-07-28T11:29:02-05:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -322,12 +322,12 @@
     <link rel="alternate" href="http://blog.url.com/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html"/>
     <id>http://blog.url.com/2015/04/13/directory-structure-conventions-in-rspec-and-minitest.html</id>
     <published>2015-04-12T19:00:00-05:00</published>
-    <updated>2015-07-05T16:31:10-05:00</updated>
+    <updated>2015-09-16T22:52:25-05:00</updated>
     <author>
       <name>Article Author</name>
     </author>
-    <content type="html">&lt;p&gt;When we create a new project in Ruby, the basic structure is putting the code in a directory named &lt;code&gt;lib&lt;/code&gt;. We can also add a directory named &lt;code&gt;test&lt;/code&gt; or &lt;code&gt;spec&lt;/code&gt; for our testing files. That is not mandatory, but it is a convention that we should follow, not only because our directory structure will be more intuitive, but also because the testing frameworks sometimes assume it.
-If we want to use RSpec, the directory name should be &lt;code&gt;spec&lt;/code&gt;. If we prefer Minitest, we are allowed to name it the way we want, but it is common to named it &lt;code&gt;test&lt;/code&gt; or &lt;code&gt;spec&lt;/code&gt; as well.&lt;/p&gt;
+    <content type="html">&lt;p&gt;When we create a new project in Ruby, the basic structure is a directory named &lt;code&gt;lib&lt;/code&gt;, where we can put the code. We can also add a directory named &lt;code&gt;test&lt;/code&gt; or &lt;code&gt;spec&lt;/code&gt; for our testing files. That is not mandatory, but it is a convention that we should follow, not only because our directory structure will be more intuitive, but also because the testing frameworks sometimes assume it.
+If we want to use RSpec, the directory name should be &lt;code&gt;spec&lt;/code&gt;. If we prefer Minitest, we are allowed to name it the way we want, but it is common to name it &lt;code&gt;test&lt;/code&gt; or &lt;code&gt;spec&lt;/code&gt; as well.&lt;/p&gt;
 
 &lt;h2&gt;RSpec&lt;/h2&gt;
 
@@ -359,7 +359,7 @@ If we want to use RSpec, the directory name should be &lt;code&gt;spec&lt;/code&
 &lt;span class="k"&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;It is just the first test for a fizz buzz project.&lt;/p&gt;
+&lt;p&gt;This is just the first test for a fizz buzz project.&lt;/p&gt;
 
 &lt;p&gt;Now, we can just run &lt;code&gt;rspec&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_rspec]$ rspec
@@ -369,9 +369,9 @@ Finished in 0.00151 seconds (files took 0.1615 seconds to load)
 1 example, 0 failures
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;I&amp;rsquo;m starting with a passing test because the result is less verbose, but you know that you should start with a failing test, right?, right? :)&lt;/p&gt;
+&lt;p&gt;I started with a passing test because the result is less verbose, but you know that you should start with a failing test, right?, right? :)&lt;/p&gt;
 
-&lt;p&gt;As we can see, we didn&amp;rsquo;t need any extra configuration. In our &lt;code&gt;fizz_buzz_spec&lt;/code&gt; file, we required the &lt;code&gt;fizz_buzz&lt;/code&gt; file and nothing more. Actually, we didn&amp;rsquo;t need to require the &lt;code&gt;rspec&lt;/code&gt; library and we didn&amp;rsquo;t specify where our test files were. We just run the &lt;code&gt;rspec&lt;/code&gt; command from the command line in our project directory and RSpec did the rest.&lt;/p&gt;
+&lt;p&gt;As we can see, we didn&amp;rsquo;t need any extra configuration. In our &lt;code&gt;fizz_buzz_spec&lt;/code&gt; file, we required the &lt;code&gt;fizz_buzz&lt;/code&gt; file and nothing more. Actually, we didn&amp;rsquo;t need to require the &lt;code&gt;rspec&lt;/code&gt; library and we didn&amp;rsquo;t specify where our test files were. We just ran the &lt;code&gt;rspec&lt;/code&gt; command from the command line in our project directory and RSpec did the rest.&lt;/p&gt;
 
 &lt;p&gt;What would have happened if our spec directory was named differently? Let&amp;rsquo;s say&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_rspec
@@ -415,9 +415,9 @@ Finished in 0.00031 seconds (files took 0.07711 seconds to load)
 0 examples, 0 failures
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;RSpec didn&amp;rsquo;t load our file because it does not follow the name convention. If we name it back to &lt;code&gt;fizz_buzz_spec.rb&lt;/code&gt;, it will work again.&lt;/p&gt;
+&lt;p&gt;RSpec didn&amp;rsquo;t load our file because it does not follow the name convention. If we rename it to &lt;code&gt;fizz_buzz_spec.rb&lt;/code&gt;, it will work again.&lt;/p&gt;
 
-&lt;p&gt;If we see the testing file, we can see we didn&amp;rsquo;t need any special configuration to load the &lt;code&gt;fizz_buzz.rb&lt;/code&gt; besides requiring it. RSpec assumes that our code is in a &lt;code&gt;lib&lt;/code&gt; directory and that is why it can load our file correctly. Let&amp;rsquo;s try to rename the &lt;code&gt;lib&lt;/code&gt; directory and see what happen.&lt;/p&gt;
+&lt;p&gt;If we check the testing file, we can see we didn&amp;rsquo;t need any special configuration to load the &lt;code&gt;fizz_buzz.rb&lt;/code&gt; besides requiring it. RSpec assumes that our code is in a &lt;code&gt;lib&lt;/code&gt; directory and that is why it can load our file correctly. Let&amp;rsquo;s try to rename the &lt;code&gt;lib&lt;/code&gt; directory and see what happens.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_rspec
 ├── main
 │   └── fizz_buzz.rb
@@ -433,13 +433,13 @@ Finished in 0.00031 seconds (files took 0.07711 seconds to load)
 ...
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;It is failing because of the &lt;code&gt;require&lt;/code&gt; (the first line of the spec file). It doesn&amp;rsquo;t find a &lt;code&gt;fizz_buzz.rb&lt;/code&gt; file, which is assumed to be in the &lt;code&gt;lib&lt;/code&gt; directory that we just renamed. So, we rename it back to &lt;code&gt;lib&lt;/code&gt; and everything works again.&lt;/p&gt;
+&lt;p&gt;It failed because of the &lt;code&gt;require&lt;/code&gt; (the first line of the spec file). It doesn&amp;rsquo;t find a &lt;code&gt;fizz_buzz.rb&lt;/code&gt; file, which is assumed to be in the &lt;code&gt;lib&lt;/code&gt; directory that we just renamed. So, we rename it back to &lt;code&gt;lib&lt;/code&gt; and everything works again.&lt;/p&gt;
 
 &lt;p&gt;So, as we can see, it is better to stick to the conventions when we use RSpec.&lt;/p&gt;
 
 &lt;h3&gt;&lt;code&gt;spec_helper&lt;/code&gt;&lt;/h3&gt;
 
-&lt;p&gt;It is common to use a &lt;code&gt;spec_helper&lt;/code&gt; file. When our project grows, we need to include more testing libraries, or add more tasks to do before or after testing. For example, we would like to include &lt;code&gt;shoulda&lt;/code&gt;, or to clean the database. This tasks affect many testing files, so, it is better to have them in one file and include it in the other files. Our example does not need anything else, but I just want to show how it would be if it needed it.&lt;/p&gt;
+&lt;p&gt;It is common to use a &lt;code&gt;spec_helper&lt;/code&gt; file. When our project grows, we need to include more testing libraries, or add more tasks before or after testing. For example, we would like to include &lt;code&gt;shoulda&lt;/code&gt;, or to clean the database. These tasks affect many testing files, so, it is better to have them in one file and include this in the other files. Our example does not need anything else, but I just want to show how it would be if it did.&lt;/p&gt;
 
 &lt;p&gt;Let&amp;rsquo;s say we want to use the &lt;code&gt;rspec-given&lt;/code&gt; gem. After installing it, we need to add this line in the &lt;code&gt;fizz_buzz_spec.rb&lt;/code&gt; file:&lt;/p&gt;
 
@@ -490,11 +490,11 @@ Finished in 0.00031 seconds (files took 0.07711 seconds to load)
 
 &lt;p&gt;It loads all the libraries it needs to work with, and configures RSpec to use transactional fixtures and to execute the tests in random order.&lt;/p&gt;
 
-&lt;p&gt;Note that this time, &lt;code&gt;spec_helper&lt;/code&gt; is just another file, it can be named differently and it will still work as longs as it is required with the correct name.&lt;/p&gt;
+&lt;p&gt;Note that this time, &lt;code&gt;spec_helper&lt;/code&gt; is just another file, it can be named differently and it will still work as long as it is required with the correct name.&lt;/p&gt;
 
 &lt;h2&gt;Minitest&lt;/h2&gt;
 
-&lt;p&gt;Minitest allows us to name our directories the way we want, but we need to have it in mind because it is important when running our tests.&lt;/p&gt;
+&lt;p&gt;Minitest allows us to name our directories the way we want, but we need to have that in mind because it is important when running our tests.&lt;/p&gt;
 
 &lt;p&gt;I like to follow the conventions, so I created the project with a structure very similar to the RSpec&amp;rsquo;s one.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;fizz_buzz_minitest
@@ -525,7 +525,7 @@ Finished in 0.00031 seconds (files took 0.07711 seconds to load)
 
 &lt;p&gt;The first thing I&amp;rsquo;d like to point out is that in Minitest it is mandatory to require the Minitest library, specifically &lt;code&gt;minitest/autorun&lt;/code&gt;, which provides everything we need to execute the test (e.g. the assertions methods). Note that I&amp;rsquo;m using the &lt;em&gt;spec&lt;/em&gt; syntax here, but it is also possible to use the classic syntax for Minitest.&lt;/p&gt;
 
-&lt;p&gt;Now, we don&amp;rsquo;t have a &lt;code&gt;minitest&lt;/code&gt; command to run, as we had with RSpec. Minitest is a very basic (but very powerful) testing framework. One of its strengths is that it is not a DSL (like RSpec), but simple Ruby (although our syntax uses the DLS style). Anyway, in order to execute our test, we need to run just ruby.&lt;/p&gt;
+&lt;p&gt;Now, we don&amp;rsquo;t have a &lt;code&gt;minitest&lt;/code&gt; command to run, as we had with RSpec. Minitest is a very basic (but very powerful) testing framework. One of its strengths is that it is not a DSL (like RSpec), but simple Ruby (although our syntax uses the DLS style). Anyway, in order to execute our test, we just need to run ruby.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby test/fizz_buzz_test.rb
 [...]core_ext/kernel_require.rb:54:in `require': cannot load such file -- fizz_buzz (LoadError)
 ...
@@ -534,7 +534,7 @@ Finished in 0.00031 seconds (files took 0.07711 seconds to load)
 
 &lt;p&gt;Humm, it actually executed something, but it didn&amp;rsquo;t go well. What happened here is that it was not possible to load the &lt;code&gt;fizz_buzz&lt;/code&gt; file. Luckily, it is something easy to solve. Ruby includes &lt;code&gt;require_relative&lt;/code&gt; to require a file specifying a relative path. This path must be built based on the current file path. In our case, our test file is inside a &lt;code&gt;test&lt;/code&gt; directory, so the path has to move backward one directory (with &lt;code&gt;..&lt;/code&gt;) and then add the path to the required file.&lt;/p&gt;
 
-&lt;p&gt;Our testing file now looks this way.&lt;/p&gt;
+&lt;p&gt;Our testing file now looks like this.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;#test/fizz_buzz_test.rb&lt;/code&gt;&lt;/p&gt;
 &lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
@@ -578,7 +578,7 @@ Finished in 0.000718s, 1393.3787 runs/s, 1393.3787 assertions/s.
 
 &lt;p&gt;In our example we have just one file, but in a real project it would be a big problem.&lt;/p&gt;
 
-&lt;p&gt;Fortunately, we have an alternative. We can execute our test file specifying in the command line where ruby must look for the required files. With our initial structure, we can execute the test this way.&lt;/p&gt;
+&lt;p&gt;Fortunately, we have an alternative. We can execute our test file by specifying in the command line where ruby must look for the required files. With our initial structure, we can execute the test this way.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby -I lib test/fizz_buzz_test.rb
 Run options: --seed 2633
 
@@ -634,9 +634,9 @@ Finished in 0.000719s, 1389.9584 runs/s, 1389.9584 assertions/s.
 &lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/pride'&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;We extracted the require of Minitest&amp;rsquo;s autorun to the &lt;code&gt;test_helper&lt;/code&gt; file, and also required &lt;code&gt;pride&lt;/code&gt;, a small library from Minitest that colorize the output.&lt;/p&gt;
+&lt;p&gt;We extracted the require of Minitest&amp;rsquo;s autorun to the &lt;code&gt;test_helper&lt;/code&gt; file, and also required &lt;code&gt;pride&lt;/code&gt;, a small library from Minitest that colorizes the output.&lt;/p&gt;
 
-&lt;p&gt;Now we need to change the require of our testing file.&lt;/p&gt;
+&lt;p&gt;Now we need to change the &lt;code&gt;require&lt;/code&gt; of our testing file.&lt;/p&gt;
 
 &lt;p&gt;&lt;code&gt;#spec/fizz_buzz_test.rb&lt;/code&gt;&lt;/p&gt;
 &lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'test_helper'&lt;/span&gt;
@@ -657,9 +657,9 @@ Finished in 0.000719s, 1389.9584 runs/s, 1389.9584 assertions/s.
         from spec/fizz_buzz_test.rb:1:in `&amp;lt;main&amp;gt;'
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Ups, something failed.&lt;/p&gt;
+&lt;p&gt;Oops, something failed.&lt;/p&gt;
 
-&lt;p&gt;The reason is that the required file couldn&amp;rsquo;t be loaded. We indicated ruby that it should load the &lt;code&gt;lib&lt;/code&gt; directory, but the &lt;code&gt;test_helper&lt;/code&gt; is not there. It is in the &lt;code&gt;test&lt;/code&gt; directory. Well, for that case, we can use &lt;code&gt;require_relative&lt;/code&gt;, but we could have the same potential problems: if we move the files into other directories, all the paths passed to &lt;code&gt;require_relative&lt;/code&gt; should be updated as well.&lt;/p&gt;
+&lt;p&gt;The reason is that the required file couldn&amp;rsquo;t be loaded. We indicated to ruby that it should load the &lt;code&gt;lib&lt;/code&gt; directory, but the &lt;code&gt;test_helper&lt;/code&gt; is not there. It is in the &lt;code&gt;test&lt;/code&gt; directory. Well, in that case, we can use &lt;code&gt;require_relative&lt;/code&gt;, but we could have the same potential problems: if we move the files into other directories, all the paths that were used with &lt;code&gt;require_relative&lt;/code&gt; should be updated as well.&lt;/p&gt;
 
 &lt;p&gt;Again, the best option is to specify that another directory should be loaded by ruby when executing the test file. We can do that by adding the &lt;code&gt;test&lt;/code&gt; directory to the list (separated by a colon &lt;code&gt;:&lt;/code&gt;)&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ ruby -I lib:test test/fizz_buzz_test.rb
@@ -676,7 +676,7 @@ Fabulous run in 0.000797s, 1254.2865 runs/s, 1254.2865 assertions/s.
 
 &lt;p&gt;And&amp;hellip; every thing is working again.&lt;/p&gt;
 
-&lt;p&gt;As we can see, Minitest does not assume a specific directory structure, because we can specify its dependencies as command line options. However, I recommend to use the same structure we use with RSpec because is a very widespread one. Any developer could figure out where to find which files, and it is easy to grow if we want to use rake (for example) to run our test in batches. We will talk about that in a future post.&lt;/p&gt;
+&lt;p&gt;As we can see, Minitest does not assume a specific directory structure, because we can specify its dependencies as command line options. However, I recommend using the same structure we use with RSpec because it is widely used. Any developer could figure out where to find which files, and it is easy to grow if we want to use rake (for example) to run our test in batches. We will talk about that in a future post.&lt;/p&gt;
 </content>
   </entry>
   <entry>
