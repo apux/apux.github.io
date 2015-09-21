@@ -8,7 +8,7 @@ For [my previous post](/2015/04/13/directory-structure-conventions-in-rspec-and-
 
     sudo pacman -S tree
 
-It is possible to run `tree` just by executing it.
+It is also possible to run `tree` just by executing it.
 
 ```
 [fizz_buzz_minitest]$ tree
@@ -127,7 +127,7 @@ If we want to see hidden files:
 31 directories, 38 files
 ```
 
-Wow!, those were many files for one basic project. The `.git` hidden directory has a lot of nested files and directories. We can specify how deep `tree` should display with `-L number`, where `number` is the level of nested directories/files to show (in our case, 2).
+Wow!, that was a lot of files for one basic project. That is because the `.git` hidden directory has a lot of nested files and directories. We can specify how deep `tree` should display with `-L number`, where `number` is the level of nested directories/files to show (in our case, 2).
 
 ```
 [fizz_buzz_minitest]$ tree -a -L 2
@@ -154,7 +154,7 @@ Wow!, those were many files for one basic project. The `.git` hidden directory h
 
 It is possible to have a colored output with the `-C` option. This shows directories in blue, executable files in green, etc.
 
-`tree` has a lot of options. I showed just a few of them, but you can see all these options by `man`.
+`tree` has a lot of options. Here, I showed just a few of them, but you can see all these options by using `man`.
 
     man tree
 
