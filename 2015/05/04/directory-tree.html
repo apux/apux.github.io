@@ -28,7 +28,7 @@
 <pre class="highlight plaintext"><code>sudo pacman -S tree
 </code></pre>
 
-<p>It is possible to run <code>tree</code> just by executing it.</p>
+<p>It is also possible to run <code>tree</code> just by executing it.</p>
 <pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ tree
 .
 ├── lib
@@ -139,7 +139,7 @@
 31 directories, 38 files
 </code></pre>
 
-<p>Wow!, those were many files for one basic project. The <code>.git</code> hidden directory has a lot of nested files and directories. We can specify how deep <code>tree</code> should display with <code>-L number</code>, where <code>number</code> is the level of nested directories/files to show (in our case, 2).</p>
+<p>Wow!, that was a lot of files for one basic project. That is because the <code>.git</code> hidden directory has a lot of nested files and directories. We can specify how deep <code>tree</code> should display with <code>-L number</code>, where <code>number</code> is the level of nested directories/files to show (in our case, 2).</p>
 <pre class="highlight plaintext"><code>[fizz_buzz_minitest]$ tree -a -L 2
 .
 ├── .git
@@ -164,7 +164,7 @@
 
 <p>It is possible to have a colored output with the <code>-C</code> option. This shows directories in blue, executable files in green, etc.</p>
 
-<p><code>tree</code> has a lot of options. I showed just a few of them, but you can see all these options by <code>man</code>.</p>
+<p><code>tree</code> has a lot of options. Here, I showed just a few of them, but you can see all these options by using <code>man</code>.</p>
 <pre class="highlight plaintext"><code>man tree
 </code></pre>
 

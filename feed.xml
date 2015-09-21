@@ -164,7 +164,7 @@
     <link rel="alternate" href="http://blog.url.com/2015/05/04/directory-tree.html"/>
     <id>http://blog.url.com/2015/05/04/directory-tree.html</id>
     <published>2015-05-03T19:00:00-05:00</published>
-    <updated>2015-07-19T23:35:43-05:00</updated>
+    <updated>2015-09-20T22:30:39-05:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -172,7 +172,7 @@
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;sudo pacman -S tree
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;It is possible to run &lt;code&gt;tree&lt;/code&gt; just by executing it.&lt;/p&gt;
+&lt;p&gt;It is also possible to run &lt;code&gt;tree&lt;/code&gt; just by executing it.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree
 .
 ├── lib
@@ -283,7 +283,7 @@
 31 directories, 38 files
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Wow!, those were many files for one basic project. The &lt;code&gt;.git&lt;/code&gt; hidden directory has a lot of nested files and directories. We can specify how deep &lt;code&gt;tree&lt;/code&gt; should display with &lt;code&gt;-L number&lt;/code&gt;, where &lt;code&gt;number&lt;/code&gt; is the level of nested directories/files to show (in our case, 2).&lt;/p&gt;
+&lt;p&gt;Wow!, that was a lot of files for one basic project. That is because the &lt;code&gt;.git&lt;/code&gt; hidden directory has a lot of nested files and directories. We can specify how deep &lt;code&gt;tree&lt;/code&gt; should display with &lt;code&gt;-L number&lt;/code&gt;, where &lt;code&gt;number&lt;/code&gt; is the level of nested directories/files to show (in our case, 2).&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[fizz_buzz_minitest]$ tree -a -L 2
 .
 ├── .git
@@ -308,7 +308,7 @@
 
 &lt;p&gt;It is possible to have a colored output with the &lt;code&gt;-C&lt;/code&gt; option. This shows directories in blue, executable files in green, etc.&lt;/p&gt;
 
-&lt;p&gt;&lt;code&gt;tree&lt;/code&gt; has a lot of options. I showed just a few of them, but you can see all these options by &lt;code&gt;man&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;tree&lt;/code&gt; has a lot of options. Here, I showed just a few of them, but you can see all these options by using &lt;code&gt;man&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;man tree
 &lt;/code&gt;&lt;/pre&gt;
 
