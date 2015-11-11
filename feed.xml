@@ -14,7 +14,7 @@
     <link rel="alternate" href="http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html"/>
     <id>http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html</id>
     <published>2015-08-30T22:49:00-05:00</published>
-    <updated>2015-11-11T11:01:35-06:00</updated>
+    <updated>2015-11-11T11:20:32-06:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -39,7 +39,7 @@ user.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;Now, we need to initialize the database with the configuration we want. Change
-es&lt;em&gt;MX to en&lt;/em&gt;US for example.&lt;/p&gt;
+&lt;code&gt;es_MX&lt;/code&gt; to en_US for example.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
 &lt;/code&gt;&lt;/pre&gt;
 
