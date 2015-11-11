@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
-    <title>El Blog de ApuX - How to Install Postgresql in Chakra Linux</title>
+    <title>El Blog de ApuX - How to Install Zsh</title>
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
     <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
   </head>
@@ -21,73 +21,10 @@
       <section id="content">
           <article>
     <h1 class="heading">
-      How to Install Postgresql in Chakra Linux
-      <time>Aug 31 2015</time>
+      How to Install Zsh
+      <time>Nov 11 2015</time>
     </h1>
-    <p>One of the basic packages we need as developers is a  Database Management
-System (DBMS). The one I use most is Postgresql and here I&rsquo;m going to show how
-to install it in Chakra Linux that probably will work on other Arch derived
-distros. This installation is for development purpose only.</p>
-
-<p>The first thing we need to do is install the package <code>postgresql</code>.</p>
-<pre class="highlight plaintext"><code>$ sudo pacman -S postgresql
-</code></pre>
-
-<p>Now, we can run the server by executing the service as root:</p>
-<pre class="highlight plaintext"><code>$ sudo systemctl start postgresql.service
-Job for postgresql.service failed because the control process exited with error code. See "systemctl status postgresql.service" and "journalctl -xe" for details.
-</code></pre>
-
-<p>It seems that our server couldn&rsquo;t start. New versions of postgresql in chakra
-needs a process to be run previously. To do that, we need to login as postgres
-user.</p>
-<pre class="highlight plaintext"><code>$ sudo su postgres
-</code></pre>
-
-<p>Now, we need to initialize the database with the configuration we want. Change
-es<em>MX to en</em>US for example.</p>
-<pre class="highlight plaintext"><code>[postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
-</code></pre>
-
-<p>Given that we are logged in as postgres user, we can create the rest of the users right
-now. The easiest way to do that is interactively.</p>
-<pre class="highlight plaintext"><code>[postgres]$ createuser --interactive
-</code></pre>
-
-<p>Now, as normal a user (not postgres), we can start our server.</p>
-<pre class="highlight plaintext"><code>$ sudo systemctl start postgresql.service
-</code></pre>
-
-<p>If we don&rsquo;t see any errors, it means that the server is running and accepting
-connections.</p>
-
-<p>We can now create a new database.</p>
-<pre class="highlight plaintext"><code>$ createdb &lt;DBNAME&gt; -U &lt;USERNAME&gt;
-</code></pre>
-
-<p>Change <em><USERNAME></em> with the user name you just created and <DBNAME> with the
-actual database name. Note that the option <code>-U</code> should be capital letter.</p>
-
-<p>We can access our database by typing:</p>
-<pre class="highlight plaintext"><code>$ psql &lt;DBNAME&gt; -U &lt;USERNAME&gt;
-</code></pre>
-
-<p>We should be in postgresql prompt now and that means we succeed. Type <code>\q</code> to exit.</p>
-
-<p>If we reboot our system now, we will see that postgresql doesn&rsquo;t start
-automatically. This is because we haven&rsquo;t enabled it. Let&rsquo;s check it:</p>
-<pre class="highlight plaintext"><code>$ systemctl is-enabled postgresql.service
-disabled
-</code></pre>
-
-<p>As we can see, it is disabled for autoloading at start. We can enable it easily:</p>
-<pre class="highlight plaintext"><code>$ sudo systemctl enable postgresql.service
-$ systemctl is-enabled postgresql.service
-enabled
-</code></pre>
-
-<p>And we have our postgresql server ready. Enjoy!</p>
-
+    
   </article>
   <div id="disqus_thread"></div>
 <script type="text/javascript">

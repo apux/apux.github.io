@@ -5,20 +5,36 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2015-08-30T22:49:00-05:00</updated>
+  <updated>2015-11-11T00:00:00-06:00</updated>
   <author>
     <name>Blog Author</name>
   </author>
+  <entry>
+    <title>How to Install Zsh</title>
+    <link rel="alternate" href="http://blog.url.com/2015/11/11/how-to-install-zsh.html"/>
+    <id>http://blog.url.com/2015/11/11/how-to-install-zsh.html</id>
+    <published>2015-11-11T00:00:00-06:00</published>
+    <updated>2015-11-11T00:00:11-06:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html"></content>
+  </entry>
   <entry>
     <title>How to Install Postgresql in Chakra Linux</title>
     <link rel="alternate" href="http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html"/>
     <id>http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html</id>
     <published>2015-08-30T22:49:00-05:00</published>
-    <updated>2015-11-10T21:56:49-06:00</updated>
+    <updated>2015-11-11T11:01:35-06:00</updated>
     <author>
       <name>Article Author</name>
     </author>
-    <content type="html">&lt;p&gt;The first thing we need to do is install the package &lt;code&gt;postgresql&lt;/code&gt;.&lt;/p&gt;
+    <content type="html">&lt;p&gt;One of the basic packages we need as developers is a  Database Management
+System (DBMS). The one I use most is Postgresql and here I&amp;rsquo;m going to show how
+to install it in Chakra Linux that probably will work on other Arch derived
+distros. This installation is for development purpose only.&lt;/p&gt;
+
+&lt;p&gt;The first thing we need to do is install the package &lt;code&gt;postgresql&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ sudo pacman -S postgresql
 &lt;/code&gt;&lt;/pre&gt;
 
@@ -48,7 +64,34 @@ now. The easiest way to do that is interactively.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;If we don&amp;rsquo;t see any errors, it means that the server is running and accepting
-connections. Enjoy!&lt;/p&gt;
+connections.&lt;/p&gt;
+
+&lt;p&gt;We can now create a new database.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ createdb &amp;lt;DBNAME&amp;gt; -U &amp;lt;USERNAME&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Change &lt;em&gt;&lt;USERNAME&gt;&lt;/em&gt; with the user name you just created and &lt;DBNAME&gt; with the
+actual database name. Note that the option &lt;code&gt;-U&lt;/code&gt; should be capital letter.&lt;/p&gt;
+
+&lt;p&gt;We can access our database by typing:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ psql &amp;lt;DBNAME&amp;gt; -U &amp;lt;USERNAME&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;We should be in postgresql prompt now and that means we succeed. Type &lt;code&gt;\q&lt;/code&gt; to exit.&lt;/p&gt;
+
+&lt;p&gt;If we reboot our system now, we will see that postgresql doesn&amp;rsquo;t start
+automatically. This is because we haven&amp;rsquo;t enabled it. Let&amp;rsquo;s check it:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ systemctl is-enabled postgresql.service
+disabled
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As we can see, it is disabled for autoloading at start. We can enable it easily:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ sudo systemctl enable postgresql.service
+$ systemctl is-enabled postgresql.service
+enabled
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And we have our postgresql server ready. Enjoy!&lt;/p&gt;
 </content>
   </entry>
   <entry>
@@ -815,102 +858,6 @@ Fabulous run in 0.000797s, 1254.2865 runs/s, 1254.2865 assertions/s.
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;No es tan confuso después de todo, ¿cierto?&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Joins vs Includes</title>
-    <link rel="alternate" href="http://blog.url.com/2014/12/08/joins-vs-includes.html"/>
-    <id>http://blog.url.com/2014/12/08/joins-vs-includes.html</id>
-    <published>2014-12-07T18:00:00-06:00</published>
-    <updated>2015-06-26T14:58:03-05:00</updated>
-    <author>
-      <name>Article Author</name>
-    </author>
-    <content type="html">&lt;p&gt;Sometimes, &lt;code&gt;joins&lt;/code&gt; and &lt;code&gt;includes&lt;/code&gt; can be confusing because there are scenarios where they seem to be interchangeable, but there are specific reasons to use one or the other.&lt;/p&gt;
-
-&lt;h2&gt;&lt;code&gt;joins&lt;/code&gt;&lt;/h2&gt;
-
-&lt;p&gt;&lt;code&gt;joins&lt;/code&gt; allow us to specify a relation to be included in the query. The resulting query will include a &lt;code&gt;JOIN&lt;/code&gt; clause (SQL).&lt;/p&gt;
-
-&lt;p&gt;Let&amp;rsquo;s say we have these two models: &lt;code&gt;Employee&lt;/code&gt; that has one &lt;code&gt;Computer&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="c1"&gt;#app/models/employee.rb&lt;/span&gt;
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Employee&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
-  &lt;span class="n"&gt;has_one&lt;/span&gt; &lt;span class="ss"&gt;:computer&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-
-&lt;span class="c1"&gt;#app/models/computer.rb&lt;/span&gt;
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;Computer&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;ActiveRecord&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Base&lt;/span&gt;
-  &lt;span class="n"&gt;belongs_to&lt;/span&gt; &lt;span class="ss"&gt;:employee&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;If we want to know all the employees whose name is &amp;lsquo;Fernando&amp;rsquo; and has a Dell computer, we can use &lt;code&gt;joins&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
-  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computers: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This query works well and returns all the employees who fulfill the conditions.&lt;/p&gt;
-
-&lt;p&gt;The SQL will be something like this:&lt;/p&gt;
-&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="o"&gt;*&lt;/span&gt;
- &lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;
- &lt;span class="k"&gt;INNER&lt;/span&gt; &lt;span class="k"&gt;JOIN&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt; &lt;span class="k"&gt;ON&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt;
- &lt;span class="k"&gt;WHERE&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Fernando'&lt;/span&gt; &lt;span class="k"&gt;AND&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Dell'&lt;/span&gt;
-
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2&gt;&lt;code&gt;includes&lt;/code&gt;&lt;/h2&gt;
-
-&lt;p&gt;As we explained in &lt;a href="/2014/02/03/how-to-fix-n-1-queries-in-rails.html"&gt;a previous post&lt;/a&gt;, if we want to load all the employees and all their computers in a single query, we can use &lt;code&gt;includes&lt;/code&gt;, &lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;This way, Rails hits the database just once, and load all the data from employees and computers. The confusion might start here, because using &lt;code&gt;includes&lt;/code&gt; we can also perform some conditionals in the where clause. For, example:&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-  &lt;span class="nf"&gt;includes&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
-  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computers: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;As we can see, it is possible to include conditionals that affect both relations, just like we did with &lt;code&gt;joins&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;However, the resulting SQL is different. Let&amp;rsquo;s see:&lt;/p&gt;
-&lt;pre class="highlight sql"&gt;&lt;code&gt;&lt;span class="k"&gt;SELECT&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"created_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"updated_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t0_r3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r0&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"model"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"created_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
- &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"updated_at"&lt;/span&gt; &lt;span class="k"&gt;AS&lt;/span&gt; &lt;span class="n"&gt;t1_r5&lt;/span&gt;
- &lt;span class="k"&gt;FROM&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;
- &lt;span class="k"&gt;LEFT&lt;/span&gt; &lt;span class="k"&gt;OUTER&lt;/span&gt; &lt;span class="k"&gt;JOIN&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt; &lt;span class="k"&gt;ON&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"employee_id"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"id"&lt;/span&gt;
- &lt;span class="k"&gt;WHERE&lt;/span&gt; &lt;span class="nv"&gt;"employees"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"name"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Fernando'&lt;/span&gt; &lt;span class="k"&gt;AND&lt;/span&gt; &lt;span class="nv"&gt;"computers"&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nv"&gt;"brand"&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s1"&gt;'Dell'&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;As we can see, &lt;code&gt;includes&lt;/code&gt; adds all the fields from computer, as expected, while &lt;code&gt;joins&lt;/code&gt; doesn&amp;rsquo;t. And this little difference is what we must take into account.&lt;/p&gt;
-
-&lt;p&gt;When we just want to filter the result of a query based on a field that belongs to a secondary relation, but we aren&amp;rsquo;t going to use data of this relation later, we must use &lt;code&gt;joins&lt;/code&gt;. Otherwise, we will load a lot of data that we are not going to use.&lt;/p&gt;
-
-&lt;p&gt;Example:&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;employees&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
-  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computer: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
-&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;employees&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="o"&gt;&amp;amp;&lt;/span&gt;&lt;span class="ss"&gt;:name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;On the other hand, if we need to use data from the secondary relation, then &lt;code&gt;includes&lt;/code&gt; is mandatory, otherwise, we will have N+1 query issues.&lt;/p&gt;
-
-&lt;p&gt;Example:&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="n"&gt;employees&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="no"&gt;Employee&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;
-  &lt;span class="nf"&gt;joins&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;:computer&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;
-  &lt;span class="nf"&gt;where&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;name: &lt;/span&gt;&lt;span class="s1"&gt;'Fernando'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;computer: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="ss"&gt;brand: &lt;/span&gt;&lt;span class="s1"&gt;'Dell'&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
-&lt;span class="nb"&gt;puts&lt;/span&gt; &lt;span class="n"&gt;employees&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;map&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="o"&gt;|&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;full_name&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; has a Dell &lt;/span&gt;&lt;span class="si"&gt;#{&lt;/span&gt;&lt;span class="n"&gt;e&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;computer&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;model&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;It is not so confusing after all, right?&lt;/p&gt;
 </content>
   </entry>
 </feed>
