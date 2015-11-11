@@ -4,7 +4,12 @@ date: 2015-08-31 03:49 UTC
 tags: [postgresql, chakra]
 ---
 
-The first thing we need to do is install the package `postgresql`.
+One of the basic packages we need as developers is a  Database Management
+System (DBMS). The one I use most is Postgresql and here I'm going to show how
+to install it in Chakra Linux that probably will work on other Arch derived
+distros. This installation is for development purpose only.
+
+ The first thing we need to do is install the package `postgresql`.
 
     $ sudo pacman -S postgresql
 
@@ -34,4 +39,31 @@ Now, as normal a user (not postgres), we can start our server.
     $ sudo systemctl start postgresql.service
 
 If we don't see any errors, it means that the server is running and accepting
-connections. Enjoy!
+connections.
+
+We can now create a new database.
+
+    $ createdb <DBNAME> -U <USERNAME>
+
+Change _<USERNAME>_ with the user name you just created and <DBNAME> with the
+actual database name. Note that the option `-U` should be capital letter.
+
+We can access our database by typing:
+
+    $ psql <DBNAME> -U <USERNAME>
+
+We should be in postgresql prompt now and that means we succeed. Type `\q` to exit.
+
+If we reboot our system now, we will see that postgresql doesn't start
+automatically. This is because we haven't enabled it. Let's check it:
+
+    $ systemctl is-enabled postgresql.service
+    disabled
+
+As we can see, it is disabled for autoloading at start. We can enable it easily:
+
+    $ sudo systemctl enable postgresql.service
+    $ systemctl is-enabled postgresql.service
+    enabled
+
+And we have our postgresql server ready. Enjoy!
