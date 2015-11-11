@@ -5,10 +5,52 @@
   <id>http://blog.url.com/</id>
   <link href="http://blog.url.com/"/>
   <link href="http://blog.url.com/feed.xml" rel="self"/>
-  <updated>2015-07-20T12:23:00-05:00</updated>
+  <updated>2015-08-30T22:49:00-05:00</updated>
   <author>
     <name>Blog Author</name>
   </author>
+  <entry>
+    <title>How to Install Postgresql in Chakra Linux</title>
+    <link rel="alternate" href="http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html"/>
+    <id>http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html</id>
+    <published>2015-08-30T22:49:00-05:00</published>
+    <updated>2015-11-10T21:56:49-06:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;The first thing we need to do is install the package &lt;code&gt;postgresql&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ sudo pacman -S postgresql
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, we can run the server by executing the service as root:&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ sudo systemctl start postgresql.service
+Job for postgresql.service failed because the control process exited with error code. See "systemctl status postgresql.service" and "journalctl -xe" for details.
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;It seems that our server couldn&amp;rsquo;t start. New versions of postgresql in chakra
+needs a process to be run previously. To do that, we need to login as postgres
+user.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ sudo su postgres
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, we need to initialize the database with the configuration we want. Change
+es&lt;em&gt;MX to en&lt;/em&gt;US for example.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Given that we are logged in as postgres user, we can create the rest of the users right
+now. The easiest way to do that is interactively.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[postgres]$ createuser --interactive
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now, as normal a user (not postgres), we can start our server.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ sudo systemctl start postgresql.service
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;If we don&amp;rsquo;t see any errors, it means that the server is running and accepting
+connections. Enjoy!&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Using Vim Regexp to Update to RSpec 3 Syntax</title>
     <link rel="alternate" href="http://blog.url.com/2015/07/20/using-vim-regexp-to-update-to-rspec3-syntax.html"/>
@@ -869,56 +911,6 @@ Fabulous run in 0.000797s, 1254.2865 runs/s, 1254.2865 assertions/s.
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;It is not so confusing after all, right?&lt;/p&gt;
-</content>
-  </entry>
-  <entry>
-    <title>Minitest v4 y  v5</title>
-    <link rel="alternate" href="http://blog.url.com/2014/09/01/minitest-v4-y-v5.html"/>
-    <id>http://blog.url.com/2014/09/01/minitest-v4-y-v5.html</id>
-    <published>2014-08-31T19:00:00-05:00</published>
-    <updated>2015-06-26T14:58:03-05:00</updated>
-    <author>
-      <name>Article Author</name>
-    </author>
-    <content type="html">&lt;p&gt;La versión actual de Minitset es 5, ésta es la que obtenemos al ejecutar &lt;code&gt;gem install minitest&lt;/code&gt;. Sin embargo, es muy probable que nuestra versión sea la 4, porque es la versión que se incluye con Ruby. Es decir, si no hemos instalado Minitest de manera explícita, entonces estamos usando la versión empaquetada con el intérprete.&lt;/p&gt;
-
-&lt;p&gt;Para nosotros, la diferencia es la clase de la que heredamos.&lt;/p&gt;
-
-&lt;p&gt;En la versión 4, heredamos de &lt;code&gt;MiniTest::Unit::TestCase&lt;/code&gt;. Ejemplo:&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;MiniTest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Unit&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;TestCase&lt;/span&gt;
-  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
-    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="k"&gt;end&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Nota que el módulo Minitest es &lt;code&gt;MiniTest&lt;/code&gt; con T mayúsculas.&lt;/p&gt;
-
-&lt;p&gt;En la versión 5, heredamos de &lt;code&gt;Minitest::Test&lt;/code&gt;. Ejemplo:&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
-
-&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;FizzBuzzTest&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="no"&gt;Minitest&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Test&lt;/span&gt;
-  &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;test_1_is_1&lt;/span&gt;
-    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="k"&gt;end&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Ahora, el módulo es &lt;code&gt;Minitest&lt;/code&gt; y la herarquía cambió.&lt;/p&gt;
-
-&lt;p&gt;Si preferimos la sintaxis &lt;em&gt;spec&lt;/em&gt;, no tenemos que cambiar nada.&lt;/p&gt;
-&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'minitest/autorun'&lt;/span&gt;
-
-&lt;span class="n"&gt;describe&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-  &lt;span class="n"&gt;it&lt;/span&gt; &lt;span class="s2"&gt;"is '1' when receives 1"&lt;/span&gt; &lt;span class="k"&gt;do&lt;/span&gt;
-    &lt;span class="n"&gt;assert_equal&lt;/span&gt; &lt;span class="s2"&gt;"1"&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;FizzBuzz&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;convert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-  &lt;span class="k"&gt;end&lt;/span&gt;
-&lt;span class="k"&gt;end&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;Este código funciona bien en ambas versiones.&lt;/p&gt;
 </content>
   </entry>
 </feed>

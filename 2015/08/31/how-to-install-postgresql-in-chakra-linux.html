@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
-    <title>El Blog de ApuX</title>
+    <title>El Blog de ApuX - How to Install Postgresql in Chakra Linux</title>
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
     <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
   </head>
@@ -19,12 +19,58 @@
 </nav>
 
       <section id="content">
-        <h1>Articles tagged 'Struct'</h1>
+          <article>
+    <h1 class="heading">
+      How to Install Postgresql in Chakra Linux
+      <time>Aug 31 2015</time>
+    </h1>
+    <p>The first thing we need to do is install the package <code>postgresql</code>.</p>
+<pre class="highlight plaintext"><code>$ sudo pacman -S postgresql
+</code></pre>
 
+<p>Now, we can run the server by executing the service as root:</p>
+<pre class="highlight plaintext"><code>$ sudo systemctl start postgresql.service
+Job for postgresql.service failed because the control process exited with error code. See "systemctl status postgresql.service" and "journalctl -xe" for details.
+</code></pre>
 
-<ul>
-    <li><a href="/2013/10/14/struct-and-openstruct-in-ruby.html">Struct and OpenStruct in Ruby</a> <span>Oct 14</span></li>
-</ul>
+<p>It seems that our server couldn&rsquo;t start. New versions of postgresql in chakra
+needs a process to be run previously. To do that, we need to login as postgres
+user.</p>
+<pre class="highlight plaintext"><code>$ sudo su postgres
+</code></pre>
+
+<p>Now, we need to initialize the database with the configuration we want. Change
+es<em>MX to en</em>US for example.</p>
+<pre class="highlight plaintext"><code>[postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
+</code></pre>
+
+<p>Given that we are logged in as postgres user, we can create the rest of the users right
+now. The easiest way to do that is interactively.</p>
+<pre class="highlight plaintext"><code>[postgres]$ createuser --interactive
+</code></pre>
+
+<p>Now, as normal a user (not postgres), we can start our server.</p>
+<pre class="highlight plaintext"><code>$ sudo systemctl start postgresql.service
+</code></pre>
+
+<p>If we don&rsquo;t see any errors, it means that the server is running and accepting
+connections. Enjoy!</p>
+
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+//<![CDATA[
+                  var disqus_shortname = 'elblogdeapux';
+          
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+//]]>
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
       </section>
