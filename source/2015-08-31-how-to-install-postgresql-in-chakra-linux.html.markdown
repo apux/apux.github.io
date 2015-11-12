@@ -25,7 +25,7 @@ user.
     $ sudo su postgres
 
 Now, we need to initialize the database with the configuration we want. Change
-es_MX to en_US for example.
+`es_MX` to en_US for example.
 
     [postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
 
