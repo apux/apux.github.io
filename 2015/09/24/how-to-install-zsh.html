@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv='X-UA-Compatible' content='IE=edge;chrome=1' />
-    <title>El Blog de ApuX</title>
+    <title>El Blog de ApuX - How to Install Zsh</title>
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/feed.xml" />
     <link href="/stylesheets/all.css" rel="stylesheet" type="text/css" />
   </head>
@@ -19,14 +19,106 @@
 </nav>
 
       <section id="content">
-        <h1>Archive for
-    Sep  1 2014
-</h1>
+          <article>
+    <h1 class="heading">
+      How to Install Zsh
+      <time>Sep 24 2015</time>
+    </h1>
+    <h2>Installation</h2>
 
+<p>I use Zsh as my default shell. Here I&rsquo;m going to show how to install it and
+configure it.</p>
 
-<ul>
-    <li><a href="/2014/09/01/minitest-v4-y-v5.html">Minitest v4 y  v5</a> <span>Sep  1</span></li>
-</ul>
+<p>To use Zsh I recommend the oh-my-zsh framework to make it easier. The first
+thing we need to do is install zsh if we don&rsquo;t have it already installed. We
+can do it by typing <code>sudo pacman -S zsh</code> or the equivalent one in your distro.</p>
+
+<p>To know what shell we are using, type the following command in your prompt:</p>
+<pre class="highlight plaintext"><code>$ ps $0
+bash
+</code></pre>
+
+<p>To use Zsh all you need to do is execute</p>
+<pre class="highlight plaintext"><code>$ zsh
+</code></pre>
+
+<p>It is possible that the first time it is executed, Zsh asks you to configure
+it, but we can skip it for now by typing <code>q</code> and let <code>oh-my-zsh</code> take care of
+that later.</p>
+
+<p>Now, you will show that the shell has changed:</p>
+<pre class="highlight plaintext"><code>$ echo $0
+zsh
+</code></pre>
+
+<h2>Make Zsh the default shell</h2>
+
+<p>Now we can use Zsh whenever we want, but each time we start a new session or
+open a new console, the default shell is still bash.</p>
+
+<p>To know what is our default shell, use the <code>$SHELL</code> variable:</p>
+
+<p>$ echo $SHELL
+   bash</p>
+
+<p>To change the default shell, we can use</p>
+<pre class="highlight plaintext"><code>$ chsh -s /path/to/shell
+</code></pre>
+
+<p>Good, but, how can we know this path? The first (wrong) approach I tried was
+using <code>which</code>:</p>
+<pre class="highlight plaintext"><code>$ which zsh
+/usr/bin/zsh
+</code></pre>
+
+<p>Once we know the path we can use it to change the default shell, I thought. I tried this:</p>
+<pre class="highlight plaintext"><code>$ chsh -s $(which zsh)
+chsh: "/usr/bin/zsh" is not listed in /etc/shells.
+</code></pre>
+
+<p>As we can see, it didn&rsquo;t work.</p>
+
+<p>Apparently, Zsh executable path and the actual shell path are different. A
+better approach was use <code>chsh</code> to know where the shells actually were.</p>
+<pre class="highlight plaintext"><code>$ chsh -l
+/bin/sh
+/bin/bash
+/bin/zsh
+</code></pre>
+
+<p>Now, we can use the information we have.</p>
+<pre class="highlight plaintext"><code>$ chsh -s /bin/zsh
+</code></pre>
+
+<p>If we open a new console, we could expect it to have Zsh by default, but it is
+not. It is important to remember that the new configuration will only have
+effect when we login for a new session, so you have to logout and login again
+in order to have it working.</p>
+
+<h2>Oh my zsh</h2>
+
+<p>The last part is install oh-my-sh.</p>
+<pre class="highlight plaintext"><code>$ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+</code></pre>
+
+<p>We don&rsquo;t have to reboot this time, just open a new console and you will be able to
+configure and use the themes and plugins oh-my-zsh includes. Enjoy!</p>
+
+  </article>
+  <div id="disqus_thread"></div>
+<script type="text/javascript">
+//<![CDATA[
+                  var disqus_shortname = 'elblogdeapux';
+          
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+//]]>
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
 
       </section>
