@@ -26,11 +26,11 @@
     </h1>
     <h2>Installation</h2>
 
-<p>I use Zsh as my default shell. Here I&rsquo;m going to show how to install it and
+<p>I use Zsh as my default shell. Here I&rsquo;m going to show how to install and
 configure it.</p>
 
 <p>To use Zsh I recommend the oh-my-zsh framework to make it easier. The first
-thing we need to do is install zsh if we don&rsquo;t have it already installed. We
+thing we need to do is install Zsh if we don&rsquo;t have it already installed. We
 can do it by typing <code>sudo pacman -S zsh</code> or the equivalent one in your distro.</p>
 
 <p>To know what shell we are using, type the following command in your prompt:</p>
@@ -38,7 +38,7 @@ can do it by typing <code>sudo pacman -S zsh</code> or the equivalent one in you
 bash
 </code></pre>
 
-<p>To use Zsh all you need to do is execute</p>
+<p>We are using bash right now. To use Zsh all you need to do is execute</p>
 <pre class="highlight plaintext"><code>$ zsh
 </code></pre>
 
@@ -46,7 +46,7 @@ bash
 it, but we can skip it for now by typing <code>q</code> and let <code>oh-my-zsh</code> take care of
 that later.</p>
 
-<p>Now, you will show that the shell has changed:</p>
+<p>Now, we can see that the shell has changed:</p>
 <pre class="highlight plaintext"><code>$ echo $0
 zsh
 </code></pre>
@@ -56,7 +56,7 @@ zsh
 <p>Now we can use Zsh whenever we want, but each time we start a new session or
 open a new console, the default shell is still bash.</p>
 
-<p>To know what is our default shell, use the <code>$SHELL</code> variable:</p>
+<p>To know what our default shell is, use the <code>$SHELL</code> variable:</p>
 
 <p>$ echo $SHELL
    bash</p>
@@ -79,7 +79,7 @@ chsh: "/usr/bin/zsh" is not listed in /etc/shells.
 <p>As we can see, it didn&rsquo;t work.</p>
 
 <p>Apparently, Zsh executable path and the actual shell path are different. A
-better approach was use <code>chsh</code> to know where the shells actually were.</p>
+better approach was to use <code>chsh</code> to know where the shells actually were.</p>
 <pre class="highlight plaintext"><code>$ chsh -l
 /bin/sh
 /bin/bash
@@ -95,14 +95,15 @@ not. It is important to remember that the new configuration will only have
 effect when we login for a new session, so you have to logout and login again
 in order to have it working.</p>
 
-<h2>Oh my zsh</h2>
+<h2>Oh my Zsh</h2>
 
 <p>The last part is install oh-my-sh.</p>
 <pre class="highlight plaintext"><code>$ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 </code></pre>
 
-<p>We don&rsquo;t have to reboot this time, just open a new console and you will be able to
-configure and use the themes and plugins oh-my-zsh includes. Enjoy!</p>
+<p>We don&rsquo;t have to logout and login again this time, just open a new console and
+you will be able to configure and use the themes and plugins oh-my-zsh
+includes. Enjoy!</p>
 
   </article>
   <div id="disqus_thread"></div>
