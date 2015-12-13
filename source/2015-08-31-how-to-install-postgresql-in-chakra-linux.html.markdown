@@ -29,17 +29,17 @@ Now, we need to initialize the database with the configuration we want. Change
 
     [postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
 
-Given that we are logged in as postgres user, we can create the rest of the users right
-now. The easiest way to do that is interactively.
-
-    [postgres]$ createuser --interactive
-
 Now, as normal a user (not postgres), we can start our server.
 
     $ sudo systemctl start postgresql.service
 
 If we don't see any errors, it means that the server is running and accepting
 connections.
+
+As postgres user, we can create the rest of the users right now. The easiest
+way to do that is interactively.
+
+    [postgres]$ createuser --interactive
 
 We can now create a new database.
 

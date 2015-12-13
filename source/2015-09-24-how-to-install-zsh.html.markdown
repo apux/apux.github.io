@@ -51,7 +51,8 @@ using `which`:
     $ which zsh
     /usr/bin/zsh
 
-Once we know the path we can use it to change the default shell, I thought. I tried this:
+Once we know the path we can use it to change the default shell, I thought. I
+tried this:
 
     $ chsh -s $(which zsh)
     chsh: "/usr/bin/zsh" is not listed in /etc/shells.
