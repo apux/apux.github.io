@@ -49,17 +49,17 @@ user.</p>
 <pre class="highlight plaintext"><code>[postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
 </code></pre>
 
-<p>Given that we are logged in as postgres user, we can create the rest of the users right
-now. The easiest way to do that is interactively.</p>
-<pre class="highlight plaintext"><code>[postgres]$ createuser --interactive
-</code></pre>
-
 <p>Now, as normal a user (not postgres), we can start our server.</p>
 <pre class="highlight plaintext"><code>$ sudo systemctl start postgresql.service
 </code></pre>
 
 <p>If we don&rsquo;t see any errors, it means that the server is running and accepting
 connections.</p>
+
+<p>As postgres user, we can create the rest of the users right now. The easiest
+way to do that is interactively.</p>
+<pre class="highlight plaintext"><code>[postgres]$ createuser --interactive
+</code></pre>
 
 <p>We can now create a new database.</p>
 <pre class="highlight plaintext"><code>$ createdb &lt;DBNAME&gt; -U &lt;USERNAME&gt;

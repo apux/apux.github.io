@@ -14,7 +14,7 @@
     <link rel="alternate" href="http://blog.url.com/2015/09/24/how-to-install-zsh.html"/>
     <id>http://blog.url.com/2015/09/24/how-to-install-zsh.html</id>
     <published>2015-09-24T01:00:00-05:00</published>
-    <updated>2015-11-13T21:20:07-06:00</updated>
+    <updated>2015-11-13T21:22:52-06:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -65,7 +65,8 @@ using &lt;code&gt;which&lt;/code&gt;:&lt;/p&gt;
 /usr/bin/zsh
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Once we know the path we can use it to change the default shell, I thought. I tried this:&lt;/p&gt;
+&lt;p&gt;Once we know the path we can use it to change the default shell, I thought. I
+tried this:&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ chsh -s $(which zsh)
 chsh: "/usr/bin/zsh" is not listed in /etc/shells.
 &lt;/code&gt;&lt;/pre&gt;
@@ -105,7 +106,7 @@ includes. Enjoy!&lt;/p&gt;
     <link rel="alternate" href="http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html"/>
     <id>http://blog.url.com/2015/08/31/how-to-install-postgresql-in-chakra-linux.html</id>
     <published>2015-08-30T22:49:00-05:00</published>
-    <updated>2015-11-11T11:20:32-06:00</updated>
+    <updated>2015-12-13T16:37:06-06:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -134,17 +135,17 @@ user.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;[postgres]$ initdb --locale es_MX.UTF-8 -E UTF8 -D '/var/lib/postgres/data'
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;Given that we are logged in as postgres user, we can create the rest of the users right
-now. The easiest way to do that is interactively.&lt;/p&gt;
-&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[postgres]$ createuser --interactive
-&lt;/code&gt;&lt;/pre&gt;
-
 &lt;p&gt;Now, as normal a user (not postgres), we can start our server.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ sudo systemctl start postgresql.service
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;If we don&amp;rsquo;t see any errors, it means that the server is running and accepting
 connections.&lt;/p&gt;
+
+&lt;p&gt;As postgres user, we can create the rest of the users right now. The easiest
+way to do that is interactively.&lt;/p&gt;
+&lt;pre class="highlight plaintext"&gt;&lt;code&gt;[postgres]$ createuser --interactive
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;We can now create a new database.&lt;/p&gt;
 &lt;pre class="highlight plaintext"&gt;&lt;code&gt;$ createdb &amp;lt;DBNAME&amp;gt; -U &amp;lt;USERNAME&amp;gt;
